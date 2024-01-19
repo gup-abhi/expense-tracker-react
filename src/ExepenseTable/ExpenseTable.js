@@ -15,6 +15,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { FormLabel } from "@mui/material";
+import dayjs from "dayjs";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -38,6 +42,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ExpenseTable() {
   const [expenses, setExpenses] = useState([]);
+  const [yearMonthSelected, setYearMonthSelected] = useState("");
+  const [yearMonthArray, setYearMonthArray] = useState([]);
   const navigate = useNavigate();
 
   const notify = (message) => {
@@ -45,20 +51,33 @@ export default function ExpenseTable() {
   };
 
   useEffect(() => {
-    getExpenses();
+    for (let i = -2; i < 10; i++) {
+      let month = dayjs().subtract(i, "month").format("YYYY-MM");
+      yearMonthArray.unshift(month);
+    }
+    console.log(yearMonthArray);
+    setYearMonthSelected(yearMonthArray[yearMonthArray.length - 3]);
   }, []);
 
-  const getExpenses = async () => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/expense/getAllExpensesForUser/abhi`
-      );
-      console.log(response.data);
-      setExpenses(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    const getExpenses = async () => {
+      const year = yearMonthSelected.split("-")[0];
+      const month = yearMonthSelected.split("-")[1];
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/expense/getAllExpensesForUser/abhi/y/${year}/m/${month}`
+        );
+        console.log(response.data);
+        setExpenses(response.data);
+      } catch (error) {
+        setExpenses([]);
+        console.log(error.response.data.message);
+        notify(error.response.data.message);
+      }
+    };
+
+    getExpenses();
+  }, [yearMonthSelected]);
 
   const formatDate = (date) => {
     return `${date.split("T")[0]}`;
@@ -82,7 +101,7 @@ export default function ExpenseTable() {
 
       notify(response.data.message);
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.message);
     }
   };
 
@@ -90,7 +109,12 @@ export default function ExpenseTable() {
     if (expenses?.length === 0)
       return (
         <StyledTableRow>
+          <StyledTableCell></StyledTableCell>
           <StyledTableCell>No Record Found</StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
         </StyledTableRow>
       );
 
@@ -124,21 +148,51 @@ export default function ExpenseTable() {
     ));
   };
 
+  const renderSelect = () => {
+    return (
+      <div className="col-lg-2 offset-lg-10 float-end">
+        <FormLabel id="date-select-label">YYYY-MM</FormLabel>
+        <Select
+          sx={{ width: 1 }}
+          id="date-select"
+          label="YYYY-MM"
+          value={yearMonthSelected}
+          onChange={(e) => setYearMonthSelected(e.target.value)}
+        >
+          {yearMonthArray.map((yearMonth, index) => {
+            return (
+              <MenuItem key={index} value={yearMonth}>
+                {yearMonth}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </div>
+    );
+  };
+
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="Expense table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell align="left">Edit</StyledTableCell>
-            <StyledTableCell align="left">Exepense</StyledTableCell>
-            <StyledTableCell align="left">Category</StyledTableCell>
-            <StyledTableCell align="left">Amount</StyledTableCell>
-            <StyledTableCell align="left">Date</StyledTableCell>
-            <StyledTableCell align="left">Delete</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>{renderContent()}</TableBody>
-      </Table>
-    </TableContainer>
+    <div className="comatiner-fluid">
+      <div className="row my-2">{renderSelect()}</div>
+      <div className="row my-2">
+        <div className="col-12">
+          <TableContainer component={Paper}>
+            <Table aria-label="Expense table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="left">Edit</StyledTableCell>
+                  <StyledTableCell align="left">Exepense</StyledTableCell>
+                  <StyledTableCell align="left">Category</StyledTableCell>
+                  <StyledTableCell align="left">Amount</StyledTableCell>
+                  <StyledTableCell align="left">Date</StyledTableCell>
+                  <StyledTableCell align="left">Delete</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{renderContent()}</TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      </div>
+    </div>
   );
 }
