@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import API_BASE_URL from "../config/config";
+import API_BASE_URL from "./config/config";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
@@ -15,10 +15,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { FormLabel } from "@mui/material";
-import dayjs from "dayjs";
+import SelectDate from "./SelectDate";
+import { YearMonthContext } from "./YearMonthContext";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,22 +40,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ExpenseTable() {
   const [expenses, setExpenses] = useState([]);
-  const [yearMonthSelected, setYearMonthSelected] = useState("");
-  const [yearMonthArray, setYearMonthArray] = useState([]);
   const navigate = useNavigate();
+  const { yearMonthSelected } = useContext(YearMonthContext);
 
   const notify = (message) => {
     toast(message);
   };
-
-  useEffect(() => {
-    for (let i = -2; i < 10; i++) {
-      let month = dayjs().subtract(i, "month").format("YYYY-MM");
-      yearMonthArray.unshift(month);
-    }
-    console.log(yearMonthArray);
-    setYearMonthSelected(yearMonthArray[yearMonthArray.length - 3]);
-  }, []);
 
   useEffect(() => {
     const getExpenses = async () => {
@@ -148,32 +136,16 @@ export default function ExpenseTable() {
     ));
   };
 
-  const renderSelect = () => {
-    return (
-      <div className="col-lg-2 offset-lg-10 float-end">
-        <FormLabel id="date-select-label">YYYY-MM</FormLabel>
-        <Select
-          sx={{ width: 1 }}
-          id="date-select"
-          label="YYYY-MM"
-          value={yearMonthSelected}
-          onChange={(e) => setYearMonthSelected(e.target.value)}
-        >
-          {yearMonthArray.map((yearMonth, index) => {
-            return (
-              <MenuItem key={index} value={yearMonth}>
-                {yearMonth}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </div>
-    );
-  };
-
   return (
     <div className="comatiner-fluid">
-      <div className="row my-2">{renderSelect()}</div>
+      <div className="row my-2 justify-content-end">
+        {/* <YearMonthProvider> */}
+        <SelectDate
+        // yearMonthSelected={yearMonthSelected}
+        // setYearMonthSelected={setYearMonthSelected}
+        />
+        {/* </YearMonthProvider> */}
+      </div>
       <div className="row my-2">
         <div className="col-12">
           <TableContainer component={Paper}>

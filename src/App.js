@@ -1,6 +1,6 @@
-import AddOrUpdateExpense from "./AddOrUpdateExpense/AddOrUpdateExpense";
+import AddOrUpdateExpense from "./AddOrUpdateExpense";
 import "./App.css";
-import Home from "./Home/Home";
+import Home from "./Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -11,7 +11,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/add-expense" element={<AddOrUpdateExpense />} />
-          {/* <Route path="/signup" element={<SignUp />} /> */}
         </Routes>
       </BrowserRouter>
       <ToastContainer />

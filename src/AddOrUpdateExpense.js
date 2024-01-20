@@ -8,7 +8,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import API_BASE_URL from "../config/config";
+import API_BASE_URL from "./config/config";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
