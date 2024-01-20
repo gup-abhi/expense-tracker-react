@@ -7,7 +7,7 @@ const SelectDate = () => {
     useContext(YearMonthContext);
 
   return (
-    <div className="col-3 col-lg-2">
+    <div className="col-6 col-lg-2">
       <FormLabel id="date-select-label">YYYY-MM</FormLabel>
       <Select
         sx={{ width: 1 }}

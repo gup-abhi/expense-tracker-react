@@ -30,7 +30,7 @@ const Home = () => {
         </div>
       </div>
       <div className="row p-2 justify-content-end">
-        <div className="col-1">
+        <div className="col-3 col-lg-1 mx-3">
           <FormControlLabel
             control={<Switch />}
             label={isSwitch ? "Home" : "Chart"}

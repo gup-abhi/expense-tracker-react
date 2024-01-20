@@ -6,9 +6,20 @@
   padding: 0;
 }
 
-body {
+html {
   min-height: 100vh;
+  width: 100vw;
+}
+
+body {
+  min-height: inherit;
+  width: inherit;
   text-rendering: optimizeSpeed;
   font-family: "Roboto", sans-serif;
+}
+
+.App {
+  min-height: inherit;
+  width: inherit;
   padding: 1rem;
 }
