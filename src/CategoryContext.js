@@ -1,18 +1,13 @@
 import { useState, useEffect, createContext } from "react";
 import axios from "axios";
 import API_BASE_URL from "./config/config";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { notify } from "./Notification";
 
 export const CategoryContext = createContext();
 
 export const CategoryProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState("");
-
-  const notify = (message) => {
-    toast(message);
-  };
 
   useEffect(() => {
     const getCategories = async () => {
@@ -22,8 +17,8 @@ export const CategoryProvider = ({ children }) => {
         setCategories(response.data);
         setCategory(response.data[response.data.length - 1].id);
       } catch (error) {
-        notify(error.response.data.message);
-        console.error(error);
+        console.error(error.response.data.message);
+        notify(error.response.data.message, "error");
       }
     };
 

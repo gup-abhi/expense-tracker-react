@@ -11,10 +11,9 @@ import axios from "axios";
 import API_BASE_URL from "./config/config";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { notify } from "./Notification";
 
 const AddOrUpdateExpense = () => {
   const location = useLocation();
@@ -45,8 +44,8 @@ const AddOrUpdateExpense = () => {
           setCategory(response.data[0].id);
         }
       } catch (error) {
-        notify(error.response.data.message);
-        console.error(error);
+        notify(error.response.data.message, "error");
+        console.error(error.response.data.message);
       }
     };
 
@@ -70,10 +69,6 @@ const AddOrUpdateExpense = () => {
       );
     }
   }, [categories, expenseToUpdate]);
-
-  const notify = (message) => {
-    toast(message);
-  };
 
   const handleDateChange = (date) => {
     console.log(`date - ${date}`);
@@ -137,7 +132,7 @@ const AddOrUpdateExpense = () => {
             category_id: category,
           });
         } else {
-          notify("Please enter all the details before submitting");
+          notify("Please enter all the details before submitting", "error");
           return;
         }
       } else {
@@ -153,17 +148,17 @@ const AddOrUpdateExpense = () => {
             }
           );
         } else {
-          notify("Please edit before submitting");
+          notify("Please edit before submitting", "error");
           return;
         }
       }
 
       console.log(`response - ${JSON.stringify(response.data)}`);
-      notify(response.data.message);
+      notify(response.data.message, "success");
       reset();
     } catch (error) {
-      notify(error);
-      console.error(error);
+      notify(error.response.data.message, "error");
+      console.error(error.response.data.message);
     }
   };
 

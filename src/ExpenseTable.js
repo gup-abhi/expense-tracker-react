@@ -13,12 +13,11 @@ import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import SelectDate from "./SelectDate";
 import { YearMonthContext } from "./YearMonthContext";
 import SelectCategory from "./SelectCategory";
 import { CategoryContext } from "./CategoryContext";
+import { notify } from "./Notification";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -46,10 +45,6 @@ export default function ExpenseTable() {
   const { yearMonthSelected } = useContext(YearMonthContext);
   const { category } = useContext(CategoryContext);
 
-  const notify = (message) => {
-    toast(message);
-  };
-
   useEffect(() => {
     const getExpenses = async () => {
       const year = yearMonthSelected.split("-")[0];
@@ -63,7 +58,7 @@ export default function ExpenseTable() {
       } catch (error) {
         setExpenses([]);
         console.log(error.response.data.message);
-        notify(error.response.data.message);
+        notify(error.response.data.message, "error");
       }
     };
 
@@ -85,14 +80,13 @@ export default function ExpenseTable() {
         `${API_BASE_URL}/expense/${expense.id}`
       );
       console.log(`deleteExpense - ${JSON.stringify(response.data)}`);
-
+      notify(response.data.message, "success");
       setExpenses(
         expenses.filter((expenseObj) => expenseObj.id !== expense.id)
       );
-
-      notify(response.data.message);
     } catch (error) {
       console.log(error.response.data.message);
+      notify(error.response.data.message, "error");
     }
   };
 

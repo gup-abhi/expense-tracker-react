@@ -3,9 +3,8 @@ import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import axios from "axios";
 import API_BASE_URL from "./config/config";
 import { YearMonthContext } from "./YearMonthContext";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { CategoryContext } from "./CategoryContext";
+import { notify } from "./Notification";
 
 export default function PieChartGarph() {
   const [graphData, setGraphData] = useState([]);
@@ -14,10 +13,6 @@ export default function PieChartGarph() {
   const [height, setHeight] = useState(window.innerHeight - 200);
   const { yearMonthSelected } = useContext(YearMonthContext);
   const { category } = useContext(CategoryContext);
-
-  const notify = (message) => {
-    toast(message);
-  };
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -94,7 +89,7 @@ export default function PieChartGarph() {
       } catch (error) {
         console.error(error);
         setGraphData([]);
-        notify(error.response.data.message);
+        notify(error.response.data.message, "error");
       }
     };
 
