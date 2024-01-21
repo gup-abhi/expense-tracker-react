@@ -6,6 +6,7 @@ import DisplayChart from "./DisplayChart";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { YearMonthProvider } from "./YearMonthContext";
+import { CategoryProvider } from "./CategoryContext";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -40,7 +41,9 @@ const Home = () => {
       </div>
       <div className="row">
         <div className="col">
-          <YearMonthProvider>{renderComponent()}</YearMonthProvider>
+          <CategoryProvider>
+            <YearMonthProvider>{renderComponent()}</YearMonthProvider>
+          </CategoryProvider>
         </div>
       </div>
       <div className="row">

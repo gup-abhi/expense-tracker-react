@@ -5,6 +5,7 @@ import API_BASE_URL from "./config/config";
 import { YearMonthContext } from "./YearMonthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CategoryContext } from "./CategoryContext";
 
 export default function PieChartGarph() {
   const [graphData, setGraphData] = useState([]);
@@ -12,6 +13,7 @@ export default function PieChartGarph() {
   const [width, setWidth] = useState(window.innerWidth - 80);
   const [height, setHeight] = useState(window.innerHeight - 200);
   const { yearMonthSelected } = useContext(YearMonthContext);
+  const { category } = useContext(CategoryContext);
 
   const notify = (message) => {
     toast(message);
@@ -84,7 +86,7 @@ export default function PieChartGarph() {
       const month = yearMonthSelected.split("-")[1];
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getTotalAmountForEachCategory/abhi/y/${year}/m/${month}`
+          `${API_BASE_URL}/expense/getTotalAmountForEachCategory/abhi/y/${year}/m/${month}/c/${category}`
         );
 
         console.log(`response - ${JSON.stringify(response.data)}`);
@@ -97,7 +99,7 @@ export default function PieChartGarph() {
     };
 
     getDataForGraph();
-  }, [yearMonthSelected]);
+  }, [yearMonthSelected, category]);
 
   const renderGraph = () => {
     return (

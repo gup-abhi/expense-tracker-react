@@ -36,6 +36,20 @@ const AddOrUpdateExpense = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/category`);
+        console.log(`categories - ${JSON.stringify(response.data)}`);
+        setCategorioes(response.data);
+        if (!expenseToUpdate) {
+          setCategory(response.data[0].id);
+        }
+      } catch (error) {
+        notify(error.response.data.message);
+        console.error(error);
+      }
+    };
+
     getCategories();
   }, []);
 
@@ -59,20 +73,6 @@ const AddOrUpdateExpense = () => {
 
   const notify = (message) => {
     toast(message);
-  };
-
-  const getCategories = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/category`);
-      console.log(`categories - ${JSON.stringify(response.data)}`);
-      setCategorioes(response.data);
-      if (!expenseToUpdate) {
-        setCategory(response.data[0].id);
-      }
-    } catch (error) {
-      notify(error.response.data.message);
-      console.error(error);
-    }
   };
 
   const handleDateChange = (date) => {

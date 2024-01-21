@@ -17,6 +17,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SelectDate from "./SelectDate";
 import { YearMonthContext } from "./YearMonthContext";
+import SelectCategory from "./SelectCategory";
+import { CategoryContext } from "./CategoryContext";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,6 +44,7 @@ export default function ExpenseTable() {
   const [expenses, setExpenses] = useState([]);
   const navigate = useNavigate();
   const { yearMonthSelected } = useContext(YearMonthContext);
+  const { category } = useContext(CategoryContext);
 
   const notify = (message) => {
     toast(message);
@@ -53,7 +56,7 @@ export default function ExpenseTable() {
       const month = yearMonthSelected.split("-")[1];
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getAllExpensesForUser/abhi/y/${year}/m/${month}`
+          `${API_BASE_URL}/expense/getAllExpensesForUser/abhi/y/${year}/m/${month}/c/${category}`
         );
         console.log(response.data);
         setExpenses(response.data);
@@ -65,7 +68,7 @@ export default function ExpenseTable() {
     };
 
     getExpenses();
-  }, [yearMonthSelected]);
+  }, [yearMonthSelected, category]);
 
   const formatDate = (date) => {
     return `${date.split("T")[0]}`;
@@ -119,7 +122,9 @@ export default function ExpenseTable() {
         </StyledTableCell>
         <StyledTableCell align="left">{expense.expense}</StyledTableCell>
         <StyledTableCell align="left">{expense.category_name}</StyledTableCell>
-        <StyledTableCell align="left">{expense.amount}</StyledTableCell>
+        <StyledTableCell align="left">
+          {expense.amount} {expense.currency_code}
+        </StyledTableCell>
         <StyledTableCell align="left">
           {formatDate(expense.date)}
         </StyledTableCell>
@@ -139,12 +144,8 @@ export default function ExpenseTable() {
   return (
     <div className="comatiner-fluid">
       <div className="row my-2 justify-content-end">
-        {/* <YearMonthProvider> */}
-        <SelectDate
-        // yearMonthSelected={yearMonthSelected}
-        // setYearMonthSelected={setYearMonthSelected}
-        />
-        {/* </YearMonthProvider> */}
+        <SelectCategory />
+        <SelectDate />
       </div>
       <div className="row my-2">
         <div className="col-12">
