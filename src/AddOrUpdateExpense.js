@@ -110,7 +110,7 @@ const AddOrUpdateExpense = () => {
   }, [expenseToUpdate]);
 
   useEffect(() => {
-    console.log("expenseToUpdate:", expenseToUpdate);
+    // console.log("expenseToUpdate:", expenseToUpdate);
     if (categories.length > 0) {
       setCategory(
         expenseToUpdate ? expenseToUpdate.category_id : categories[0].id
@@ -119,7 +119,7 @@ const AddOrUpdateExpense = () => {
   }, [categories, expenseToUpdate]);
 
   useEffect(() => {
-    console.log("expenseToUpdate:", expenseToUpdate);
+    // console.log("expenseToUpdate:", expenseToUpdate);
     if (paymentMethods.length > 0) {
       setPaymentMethod(
         expenseToUpdate
@@ -130,10 +130,12 @@ const AddOrUpdateExpense = () => {
   }, [paymentMethods, expenseToUpdate]);
 
   useEffect(() => {
-    console.log("expenseToUpdate:", expenseToUpdate);
+    // console.log("expenseToUpdate:", expenseToUpdate);
     if (transactionTypes.length > 0) {
       setTransactionType(
-        expenseToUpdate ? expenseToUpdate.transaction_type_id : categories[0].id
+        expenseToUpdate
+          ? expenseToUpdate.transaction_type_id
+          : transactionTypes[0].id
       );
     }
   }, [transactionTypes, expenseToUpdate]);
@@ -196,7 +198,7 @@ const AddOrUpdateExpense = () => {
       let response;
 
       if (!expenseToUpdate) {
-        console.log(`Inside`);
+        // console.log(`Inside`);
         if (isFilled()) {
           response = await axios.post(`${API_BASE_URL}/expense`, {
             username: "abhi",
