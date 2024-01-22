@@ -20,7 +20,7 @@ const AddOrUpdateExpense = () => {
   dayjs.extend(utc);
   let expenseToUpdate = location.state?.expenseToUpdate;
   const [expenseName, setExpenseName] = useState(
-    expenseToUpdate ? expenseToUpdate.expense : ""
+    expenseToUpdate ? expenseToUpdate.description : ""
   );
   const [amount, setAmount] = useState(
     expenseToUpdate ? expenseToUpdate.amount : 0
@@ -28,6 +28,18 @@ const AddOrUpdateExpense = () => {
   const [categories, setCategorioes] = useState([]);
   const [category, setCategory] = useState(
     expenseToUpdate ? expenseToUpdate.category_id : categories[0]?.id || ""
+  );
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState(
+    expenseToUpdate
+      ? expenseToUpdate.payment_method_id
+      : paymentMethods[0]?.id || ""
+  );
+  const [transactionTypes, setTransactionTypes] = useState([]);
+  const [transactionType, setTransactionType] = useState(
+    expenseToUpdate
+      ? expenseToUpdate.transaction_type_id
+      : transactionTypes[0]?.id || ""
   );
   const [selectedDate, setSelectedDate] = useState(
     expenseToUpdate ? dayjs.utc(expenseToUpdate.date) : null
@@ -53,9 +65,45 @@ const AddOrUpdateExpense = () => {
   }, []);
 
   useEffect(() => {
+    const getPaymentMethods = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/payment`);
+        console.log(`categories - ${JSON.stringify(response.data)}`);
+        setPaymentMethods(response.data);
+        if (!expenseToUpdate) {
+          setPaymentMethod(response.data[0].id);
+        }
+      } catch (error) {
+        notify(error.response.data.message, "error");
+        console.error(error.response.data.message);
+      }
+    };
+
+    getPaymentMethods();
+  }, []);
+
+  useEffect(() => {
+    const getTransactionTypes = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/transaction`);
+        console.log(`categories - ${JSON.stringify(response.data)}`);
+        setTransactionTypes(response.data);
+        if (!expenseToUpdate) {
+          setTransactionType(response.data[0].id);
+        }
+      } catch (error) {
+        notify(error.response.data.message, "error");
+        console.error(error.response.data.message);
+      }
+    };
+
+    getTransactionTypes();
+  }, []);
+
+  useEffect(() => {
     console.log("expenseToUpdate:", expenseToUpdate);
     if (expenseToUpdate) {
-      setExpenseName(expenseToUpdate.expense);
+      setExpenseName(expenseToUpdate.description);
       setAmount(expenseToUpdate.amount);
       setSelectedDate(dayjs(expenseToUpdate.date));
     }
@@ -70,6 +118,26 @@ const AddOrUpdateExpense = () => {
     }
   }, [categories, expenseToUpdate]);
 
+  useEffect(() => {
+    console.log("expenseToUpdate:", expenseToUpdate);
+    if (paymentMethods.length > 0) {
+      setPaymentMethod(
+        expenseToUpdate
+          ? expenseToUpdate.payment_method_id
+          : paymentMethods[0].id
+      );
+    }
+  }, [paymentMethods, expenseToUpdate]);
+
+  useEffect(() => {
+    console.log("expenseToUpdate:", expenseToUpdate);
+    if (transactionTypes.length > 0) {
+      setTransactionType(
+        expenseToUpdate ? expenseToUpdate.transaction_type_id : categories[0].id
+      );
+    }
+  }, [transactionTypes, expenseToUpdate]);
+
   const handleDateChange = (date) => {
     console.log(`date - ${date}`);
     setSelectedDate(date);
@@ -80,6 +148,8 @@ const AddOrUpdateExpense = () => {
     setAmount(0);
     setExpenseName("");
     setCategory(categories[0]?.id || "");
+    setPaymentMethod(paymentMethods[0]?.id || "");
+    setTransactionType(transactionTypes[0]?.id || "");
     setSelectedDate(null);
   };
 
@@ -93,14 +163,18 @@ const AddOrUpdateExpense = () => {
     console.log(`
       ${expenseName} :: ${category} :: ${amount} :: ${formatDate(
       selectedDate
-    )} \n
-      ${expenseToUpdate.expense} :: ${expenseToUpdate.category_id} :: ${
+    )} :: ${paymentMethod} :: ${transactionType} \n
+      ${expenseToUpdate.description} :: ${expenseToUpdate.category_id} :: ${
       expenseToUpdate.amount
-    } :: ${formatDate(expenseToUpdate.date)}
+    } :: ${formatDate(expenseToUpdate.date)} :: ${
+      expenseToUpdate.payment_method_id
+    } :: ${expenseToUpdate.transaction_type_id}
     `);
     if (
-      expenseToUpdate.expense !== expenseName ||
+      expenseToUpdate.description !== expenseName ||
       expenseToUpdate.category_id !== category ||
+      expenseToUpdate.transaction_type_id !== transactionType ||
+      expenseToUpdate.payment_method_id !== paymentMethod ||
       expenseToUpdate.amount !== amount ||
       formatDate(expenseToUpdate.date) !== formatDate(selectedDate)
     )
@@ -110,7 +184,7 @@ const AddOrUpdateExpense = () => {
 
   const isFilled = () => {
     console.log(
-      ` ${expenseName} :: ${category} :: ${amount} :: ${selectedDate}`
+      ` ${expenseName} :: ${category} :: ${amount} :: ${selectedDate} :: ${paymentMethod} :: ${transactionType}`
     );
     if (expenseName !== "" && amount !== 0 && selectedDate !== null)
       return true;
@@ -126,10 +200,12 @@ const AddOrUpdateExpense = () => {
         if (isFilled()) {
           response = await axios.post(`${API_BASE_URL}/expense`, {
             username: "abhi",
-            expense: expenseName,
+            description: expenseName,
             date: selectedDate.toISOString().split("T")[0],
             amount: amount,
             category_id: category,
+            transaction_type_id: transactionType,
+            payment_method_id: paymentMethod,
           });
         } else {
           notify("Please enter all the details before submitting", "error");
@@ -141,10 +217,12 @@ const AddOrUpdateExpense = () => {
             `${API_BASE_URL}/expense/${expenseToUpdate.id}`,
             {
               username: "abhi",
-              expense: expenseName,
+              description: expenseName,
               date: selectedDate.toISOString().split("T")[0],
               amount: amount,
               category_id: category,
+              transaction_type_id: transactionType,
+              payment_method_id: paymentMethod,
             }
           );
         } else {
@@ -225,6 +303,61 @@ const AddOrUpdateExpense = () => {
                     })
                   ) : (
                     <MenuItem>No category</MenuItem>
+                  )}
+                </Select>
+              </div>
+            </div>
+            <div className="row p-2">
+              <div className="col-12 col-lg-6">
+                <FormLabel className="label py-2 p-lg-3 fw-bold">
+                  Payment Method
+                </FormLabel>
+              </div>
+              <div className="col-12 col-lg-6">
+                <Select
+                  sx={{ width: 3 / 4 }}
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                >
+                  {paymentMethods.length > 0 ? (
+                    paymentMethods.map((paymentMethod) => {
+                      return (
+                        <MenuItem
+                          key={paymentMethod.id}
+                          value={paymentMethod.id}
+                        >
+                          {paymentMethod.method}
+                        </MenuItem>
+                      );
+                    })
+                  ) : (
+                    <MenuItem>No payment method</MenuItem>
+                  )}
+                </Select>
+              </div>
+            </div>
+            <div className="row p-2">
+              <div className="col-12 col-lg-6">
+                <FormLabel className="label py-2 p-lg-3 fw-bold">
+                  Transaction Types
+                </FormLabel>
+              </div>
+              <div className="col-12 col-lg-6">
+                <Select
+                  sx={{ width: 3 / 4 }}
+                  value={transactionType}
+                  onChange={(e) => setTransactionType(e.target.value)}
+                >
+                  {transactionTypes.length > 0 ? (
+                    transactionTypes.map((transaction) => {
+                      return (
+                        <MenuItem key={transaction.id} value={transaction.id}>
+                          {transaction.type}
+                        </MenuItem>
+                      );
+                    })
+                  ) : (
+                    <MenuItem>No Transaction type</MenuItem>
                   )}
                 </Select>
               </div>

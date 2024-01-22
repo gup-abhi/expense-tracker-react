@@ -7,6 +7,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { YearMonthProvider } from "./YearMonthContext";
 import { CategoryProvider } from "./CategoryContext";
+import { PaymentMethodsProvider } from "./PaymentMethodsContext";
+import { TransactionTypesProvider } from "./TransactionTypesContext";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -41,9 +43,13 @@ const Home = () => {
       </div>
       <div className="row">
         <div className="col">
-          <CategoryProvider>
-            <YearMonthProvider>{renderComponent()}</YearMonthProvider>
-          </CategoryProvider>
+          <TransactionTypesProvider>
+            <PaymentMethodsProvider>
+              <CategoryProvider>
+                <YearMonthProvider>{renderComponent()}</YearMonthProvider>
+              </CategoryProvider>
+            </PaymentMethodsProvider>
+          </TransactionTypesProvider>
         </div>
       </div>
       <div className="row">

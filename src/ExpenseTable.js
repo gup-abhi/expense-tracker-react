@@ -18,6 +18,10 @@ import { YearMonthContext } from "./YearMonthContext";
 import SelectCategory from "./SelectCategory";
 import { CategoryContext } from "./CategoryContext";
 import { notify } from "./Notification";
+import SelectPaymentMethods from "./SelectPaymentMethods";
+import { PaymentMethodsContext } from "./PaymentMethodsContext";
+import SelectTransactionTypes from "./SelectTransactionTypes";
+import { TransactionTypesContext } from "./TransactionTypesContext";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -44,14 +48,17 @@ export default function ExpenseTable() {
   const navigate = useNavigate();
   const { yearMonthSelected } = useContext(YearMonthContext);
   const { category } = useContext(CategoryContext);
+  const { paymentSelected } = useContext(PaymentMethodsContext);
+  const { transactionTypeSelected } = useContext(TransactionTypesContext);
 
   useEffect(() => {
     const getExpenses = async () => {
+      console.log(`paymentSelected - ${paymentSelected}`);
       const year = yearMonthSelected.split("-")[0];
       const month = yearMonthSelected.split("-")[1];
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getAllExpensesForUser/abhi/y/${year}/m/${month}/c/${category}`
+          `${API_BASE_URL}/expense/getAllExpensesForUser/abhi/y/${year}/m/${month}/c/${category}/p/${paymentSelected}/t/${transactionTypeSelected}`
         );
         console.log(response.data);
         setExpenses(response.data);
@@ -63,7 +70,7 @@ export default function ExpenseTable() {
     };
 
     getExpenses();
-  }, [yearMonthSelected, category]);
+  }, [yearMonthSelected, category, paymentSelected, transactionTypeSelected]);
 
   const formatDate = (date) => {
     return `${date.split("T")[0]}`;
@@ -95,6 +102,8 @@ export default function ExpenseTable() {
       return (
         <StyledTableRow>
           <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
           <StyledTableCell>No Record Found</StyledTableCell>
           <StyledTableCell></StyledTableCell>
           <StyledTableCell></StyledTableCell>
@@ -114,8 +123,12 @@ export default function ExpenseTable() {
             <EditIcon />
           </Button>
         </StyledTableCell>
-        <StyledTableCell align="left">{expense.expense}</StyledTableCell>
+        <StyledTableCell align="left">{expense.description}</StyledTableCell>
         <StyledTableCell align="left">{expense.category_name}</StyledTableCell>
+        <StyledTableCell align="left">
+          {expense.transaction_type}
+        </StyledTableCell>
+        <StyledTableCell align="left">{expense.payment_method}</StyledTableCell>
         <StyledTableCell align="left">
           {expense.amount} {expense.currency_code}
         </StyledTableCell>
@@ -138,6 +151,8 @@ export default function ExpenseTable() {
   return (
     <div className="comatiner-fluid">
       <div className="row my-2 justify-content-end">
+        <SelectTransactionTypes />
+        <SelectPaymentMethods />
         <SelectCategory />
         <SelectDate />
       </div>
@@ -150,6 +165,10 @@ export default function ExpenseTable() {
                   <StyledTableCell align="left">Edit</StyledTableCell>
                   <StyledTableCell align="left">Exepense</StyledTableCell>
                   <StyledTableCell align="left">Category</StyledTableCell>
+                  <StyledTableCell align="left">
+                    Transaction Type
+                  </StyledTableCell>
+                  <StyledTableCell align="left">Payment Method</StyledTableCell>
                   <StyledTableCell align="left">Amount</StyledTableCell>
                   <StyledTableCell align="left">Date</StyledTableCell>
                   <StyledTableCell align="left">Delete</StyledTableCell>

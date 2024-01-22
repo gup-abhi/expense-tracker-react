@@ -5,6 +5,8 @@ import API_BASE_URL from "./config/config";
 import { YearMonthContext } from "./YearMonthContext";
 import { CategoryContext } from "./CategoryContext";
 import { notify } from "./Notification";
+import { TransactionTypesContext } from "./TransactionTypesContext";
+import { PaymentMethodsContext } from "./PaymentMethodsContext";
 
 export default function PieChartGarph() {
   const [graphData, setGraphData] = useState([]);
@@ -13,6 +15,8 @@ export default function PieChartGarph() {
   const [height, setHeight] = useState(window.innerHeight - 200);
   const { yearMonthSelected } = useContext(YearMonthContext);
   const { category } = useContext(CategoryContext);
+  const { transactionTypeSelected } = useContext(TransactionTypesContext);
+  const { paymentSelected } = useContext(PaymentMethodsContext);
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -81,7 +85,7 @@ export default function PieChartGarph() {
       const month = yearMonthSelected.split("-")[1];
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getTotalAmountForEachCategory/abhi/y/${year}/m/${month}/c/${category}`
+          `${API_BASE_URL}/expense/getTotalAmountForEachCategory/abhi/y/${year}/m/${month}/c/${category}/p/${paymentSelected}/t/${transactionTypeSelected}`
         );
 
         console.log(`response - ${JSON.stringify(response.data)}`);
@@ -94,7 +98,7 @@ export default function PieChartGarph() {
     };
 
     getDataForGraph();
-  }, [yearMonthSelected, category]);
+  }, [yearMonthSelected, category, paymentSelected, transactionTypeSelected]);
 
   const renderGraph = () => {
     return (
