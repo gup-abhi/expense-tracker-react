@@ -12,7 +12,9 @@ export const CategoryProvider = ({ children }) => {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/category`);
+        const response = await axios.get(
+          `${API_BASE_URL}/category?includeAll=true`
+        );
         console.log(`categories - ${JSON.stringify(response.data)}`);
         setCategories(response.data);
         setCategory(response.data[response.data.length - 1].id);

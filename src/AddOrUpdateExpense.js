@@ -216,7 +216,7 @@ const AddOrUpdateExpense = () => {
       } else {
         if (isEdit()) {
           response = await axios.put(
-            `${API_BASE_URL}/expense/${expenseToUpdate.id}`,
+            `${API_BASE_URL}/expense?id=${expenseToUpdate.id}`,
             {
               username: "abhi",
               description: expenseName,

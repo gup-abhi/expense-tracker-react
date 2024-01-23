@@ -12,7 +12,9 @@ export const PaymentMethodsProvider = ({ children }) => {
   useEffect(() => {
     const getPaymentMethods = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/payment`);
+        const response = await axios.get(
+          `${API_BASE_URL}/payment?includeAll=true`
+        );
         setPaymentArray(response.data);
         setPaymentSelected(response.data[response.data.length - 1].id);
       } catch (error) {

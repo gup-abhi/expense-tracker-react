@@ -53,12 +53,11 @@ export default function ExpenseTable() {
 
   useEffect(() => {
     const getExpenses = async () => {
-      console.log(`paymentSelected - ${paymentSelected}`);
       const year = yearMonthSelected.split("-")[0];
       const month = yearMonthSelected.split("-")[1];
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getAllExpensesForUser/abhi/y/${year}/m/${month}/c/${category}/p/${paymentSelected}/t/${transactionTypeSelected}`
+          `${API_BASE_URL}/expense/getAllExpensesForUser?username=abhi&year=${year}&month=${month}&category_id=${category}&payment_method_id=${paymentSelected}&transaction_type_id=${transactionTypeSelected}`
         );
         console.log(response.data);
         setExpenses(response.data);
@@ -68,6 +67,16 @@ export default function ExpenseTable() {
         notify(error.response.data.message, "error");
       }
     };
+
+    // Check if all parameters are set
+    if (
+      !yearMonthSelected ||
+      !category ||
+      !paymentSelected ||
+      !transactionTypeSelected
+    ) {
+      return;
+    }
 
     getExpenses();
   }, [yearMonthSelected, category, paymentSelected, transactionTypeSelected]);
@@ -84,7 +93,7 @@ export default function ExpenseTable() {
   const deleteExpense = async (expense) => {
     try {
       const response = await axios.delete(
-        `${API_BASE_URL}/expense/${expense.id}`
+        `${API_BASE_URL}/expense?id=${expense.id}`
       );
       console.log(`deleteExpense - ${JSON.stringify(response.data)}`);
       notify(response.data.message, "success");

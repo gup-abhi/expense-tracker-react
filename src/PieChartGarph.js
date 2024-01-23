@@ -85,7 +85,7 @@ export default function PieChartGarph() {
       const month = yearMonthSelected.split("-")[1];
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getTotalAmountForEachCategory/abhi/y/${year}/m/${month}/c/${category}/p/${paymentSelected}/t/${transactionTypeSelected}`
+          `${API_BASE_URL}/expense/getTotalAmountForEachCategory?username=abhi&year=${year}&month=${month}&category_id=${category}&payment_method_id=${paymentSelected}&transaction_type_id=${transactionTypeSelected}`
         );
 
         console.log(`response - ${JSON.stringify(response.data)}`);
