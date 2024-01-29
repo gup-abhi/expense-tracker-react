@@ -8,7 +8,7 @@
 
 html {
   min-height: 100vh;
-  width: 100vw;
+  max-width: 100vw;
 }
 
 body {
@@ -22,4 +22,12 @@ body {
   min-height: inherit;
   width: inherit;
   padding: 1rem;
+}
+
+.card-shadow {
+  box-shadow: 10px 12px 20px 5px gray !important;
+}
+
+.card-shadow:hover {
+  box-shadow: none !important;
 }
