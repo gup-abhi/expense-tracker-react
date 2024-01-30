@@ -12,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/add-expense" element={<AddOrUpdateExpense />} />
+          <Route path="/expenses" element={<Home />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer />

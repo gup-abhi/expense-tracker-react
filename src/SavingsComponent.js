@@ -1,22 +1,61 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, TextField, Button, LinearProgress } from "@mui/material";
 import CardComponent from "./CardComponent";
+import axios from "axios";
+import API_BASE_URL from "./config/config";
+import { notify } from "./Notification";
 
-const SavingsComponent = () => {
+const SavingsComponent = ({ month, year }) => {
   // State for savings goal and current savings
   const [goal, setGoal] = useState(0);
   const [currentSavings, setCurrentSavings] = useState(0);
 
-  // Function to handle updating current savings
-  const handleUpdateSavings = () => {
-    // Perform validation or additional logic as needed
-    // For simplicity, we'll update current savings directly
-    setCurrentSavings(Math.min(currentSavings + 10, goal));
-  };
+  let inputGoal = 0; // Use a local variable for the input field
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const savingsResponse = await axios.get(
+          `${API_BASE_URL}/user/savings?username=abhi&year=${year}&month=${month}`
+        );
+
+        const goalResponse = await axios.get(
+          `${API_BASE_URL}/user/goal?username=abhi`
+        );
+
+        setGoal(goalResponse.data.goal);
+        setCurrentSavings(savingsResponse.data.savings);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [year, month]);
 
   // Function to calculate the progress percentage
   const calculateProgress = () => {
     return (currentSavings / goal) * 100;
+  };
+
+  const updateGoal = async () => {
+    if (Number(inputGoal) === 0 || Number(inputGoal) < 0) {
+      notify("Please give a correct value", "info");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/user/goal?username=abhi&goal=${inputGoal}`
+      );
+
+      console.log(`response - ${JSON.stringify(response.data)}`);
+      setGoal(inputGoal); // Update the state when the "Update" button is clicked
+      notify(response.data.message, "success");
+    } catch (error) {
+      console.error(error);
+      notify(error.response.data.message, "error");
+    }
   };
 
   const RenderContent = () => {
@@ -31,18 +70,34 @@ const SavingsComponent = () => {
             <TextField
               label="Savings Goal"
               type="number"
-              value={goal}
-              onChange={(e) => setGoal(parseFloat(e.target.value) || 0)}
+              defaultValue={goal}
+              onChange={(e) => (inputGoal = e.target.value)} // Update the local variable on change
               fullWidth
               margin="normal"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white", // Changes the color of the border
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white", // Changes the color of the border on hover
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "white", // Changes the color of the border when focused
+                  },
+                  "& input": {
+                    // Changes the color of the input text
+                    color: "white",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "white", // Changes the color of the label
+                },
+              }}
             />
 
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleUpdateSavings}
-            >
-              Add to Savings
+            <Button variant="contained" color="primary" onClick={updateGoal}>
+              Update
             </Button>
 
             <LinearProgress
@@ -52,11 +107,11 @@ const SavingsComponent = () => {
             />
 
             <Typography variant="h6" gutterBottom style={{ marginTop: "10px" }}>
-              Current Savings: ${currentSavings.toFixed(2)}
+              Current Savings: ${currentSavings}
             </Typography>
 
             <Typography variant="h6" gutterBottom>
-              Goal: ${goal.toFixed(2)}
+              Goal: ${goal}
             </Typography>
           </div>
         </div>

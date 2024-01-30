@@ -6,7 +6,7 @@ import SavingsComponent from "./SavingsComponent";
 import TopExpensesComponent from "./TopExpensesComponent";
 import ExpenseTrendsComponent from "./ExpenseTrendsComponent";
 import AlertsRemindersComponent from "./AlertsRemindersComponent";
-import { Typography, Select, MenuItem, Grid, Box } from "@mui/material";
+import { Typography, Select, MenuItem, Grid } from "@mui/material";
 
 const Dashboard = () => {
   // Function to get the last N years
@@ -19,7 +19,7 @@ const Dashboard = () => {
     return years;
   };
 
-  const [month, setMonth] = useState("1");
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(getLastNYears(5)[0].toString());
 
   // Function to handle dropdown changes
@@ -54,12 +54,15 @@ const Dashboard = () => {
       {/* Render Components with selected dropdown values */}
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h1 className="text-center py-2">Expense Tracker Dashboard</h1>
+          <h1 className="text-center py-2 fw-bolder">
+            Expense Tracker Dashboard
+          </h1>
         </Grid>
 
         {/* Render Dropdowns */}
-        <Grid container spacing={2} mb={3}>
-          <Grid item xs={6}>
+        <Grid container spacing={2} m={3}>
+          <Grid item lg={6} />
+          <Grid item xs={12} lg={3}>
             <Typography variant="subtitle1">Month:</Typography>
             <Select
               label="Month"
@@ -72,7 +75,7 @@ const Dashboard = () => {
               {monthOptions}
             </Select>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} lg={3}>
             <Typography variant="subtitle1">Year:</Typography>
             <Select
               label="Year"
@@ -111,9 +114,9 @@ const Dashboard = () => {
           <ExpenseTrendsComponent month={month} year={year} />
         </Grid>
 
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <AlertsRemindersComponent month={month} year={year} />
-        </Grid>
+        </Grid> */}
       </Grid>
     </div>
   );

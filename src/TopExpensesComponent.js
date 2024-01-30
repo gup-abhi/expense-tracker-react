@@ -1,20 +1,28 @@
-import React, { useState } from "react";
-import { Typography, List, ListItem, ListItemText } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Typography, List, ListItem } from "@mui/material";
 import CardComponent from "./CardComponent";
+import axios from "axios";
+import API_BASE_URL from "./config/config";
 
-const TopExpensesComponent = () => {
+const TopExpensesComponent = ({ year, month }) => {
   // State for expenses list
-  const [expensesList, setExpensesList] = useState([
-    { name: "Rent", amount: 1000 },
-    { name: "Groceries", amount: 300 },
-    { name: "Utilities", amount: 200 },
-    // Add more expenses as needed
-  ]);
+  const [expensesList, setExpensesList] = useState([]);
 
-  // Function to sort expenses by amount and return the top 3
-  const getTopExpenses = () => {
-    return expensesList.sort((a, b) => b.amount - a.amount).slice(0, 3); // Get the top 3 expenses
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/expense/getTopExpenses?username=abhi&year=${year}&month=${month}`
+        );
+
+        setExpensesList(response.data);
+      } catch (error) {
+        console.error(error.response.data.message);
+      }
+    };
+
+    fetchData();
+  }, [year, month]);
 
   const RenderComponent = () => {
     return (
@@ -26,12 +34,11 @@ const TopExpensesComponent = () => {
             </Typography>
 
             <List>
-              {getTopExpenses().map((expense, index) => (
+              {expensesList.map((expense, index) => (
                 <ListItem key={index}>
-                  <ListItemText
-                    primary={expense.name}
-                    secondary={`$${expense.amount.toFixed(2)}`}
-                  />
+                  <em>
+                    {expense.description} - {`$${expense.amount}`}
+                  </em>
                 </ListItem>
               ))}
             </List>

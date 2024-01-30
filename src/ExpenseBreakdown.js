@@ -3,10 +3,10 @@ import axios from "axios";
 import API_BASE_URL from "./config/config";
 import Grid from "@mui/material/Grid";
 import CardComponent from "./CardComponent";
-import LoadingSpinner from "./LoadingSpinner"; // Import the LoadingSpinner component
+import LoadingSpinner from "./LoadingSpinner";
 import { Typography } from "@mui/material";
 
-const ExpenseBreakdown = () => {
+const ExpenseBreakdown = ({ year, month }) => {
   const [expenseBreakdown, setExpenseBreakdown] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,24 +14,27 @@ const ExpenseBreakdown = () => {
   useEffect(() => {
     const getExpenseBreakdown = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getTotalAmountForEachCategory?username=abhi&year=2024&month=01&category_id=17&payment_method_id=8&transaction_type_id=8`
+          `${API_BASE_URL}/expense/getTotalAmountForEachCategory?username=abhi&year=${year}&month=${month}&category_id=17&payment_method_id=8&transaction_type_id=8`
         );
 
         setExpenseBreakdown(response.data);
       } catch (error) {
         console.error(error);
-        setError("Error fetching data");
+        setError(error.response.data.message);
       } finally {
         setLoading(false);
       }
     };
 
     getExpenseBreakdown();
-  }, []);
+  }, [year, month]);
 
   const renderExpense = () => {
-    if (loading) return <LoadingSpinner />; // Use the LoadingSpinner component here
+    if (loading) return <LoadingSpinner />;
     if (error) return <h3>{error}</h3>;
     if (expenseBreakdown.length === 0) return <h3>No Data to show</h3>;
 
@@ -55,9 +58,7 @@ const ExpenseBreakdown = () => {
           <Typography variant="h5" gutterBottom>
             Expense Breakdown
           </Typography>
-          {/* <Grid container spacing={2}> */}
           {renderExpense()}
-          {/* </Grid> */}
         </div>
       </div>
     </div>

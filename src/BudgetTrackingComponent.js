@@ -1,34 +1,62 @@
-import React, { useState } from "react";
-import { Typography, TextField, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Typography, TextField, Button, Link } from "@mui/material";
 import CardComponent from "./CardComponent";
+import axios from "axios";
+import API_BASE_URL from "./config/config";
+import { notify } from "./Notification";
 
-const BudgetTrackingComponent = () => {
-  // State for budget and expenses
+const BudgetTrackingComponent = ({ year, month }) => {
   const [budget, setBudget] = useState(0);
-  const [expense, setExpense] = useState(0);
-  const [expensesList, setExpensesList] = useState([]);
-  const [remainingBudget, setRemainingBudget] = useState(budget);
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [remainingBudget, setRemainingBudget] = useState(0);
 
-  // Function to handle adding an expense
-  const handleAddExpense = () => {
-    if (expense > 0) {
-      setExpensesList([...expensesList, expense]);
-      setRemainingBudget(remainingBudget - expense);
-      setExpense(0);
+  let inputBudget = 0;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const remainingBudgetResponse = await axios.get(
+          `${API_BASE_URL}/user/budget/remaining?username=abhi&year=${year}&month=${month}`
+        );
+        const budgetResponse = await axios.get(
+          `${API_BASE_URL}/user/budget?username=abhi`
+        );
+        const totalExpenseResponse = await axios.get(
+          `${API_BASE_URL}/expense/getTotalExpenseForMonth?username=abhi&year=${year}&month=${month}`
+        );
+
+        setRemainingBudget(remainingBudgetResponse.data.remaining_budget);
+        setTotalExpense(totalExpenseResponse.data.total_expense);
+        setBudget(budgetResponse.data.budget); // Set the input field to the current budget
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [year, month, budget]); // Remove budget from the dependencies
+
+  const updateBudget = async () => {
+    if (Number(inputBudget) === 0 || Number(inputBudget) < 0) {
+      notify("Please provide correct value");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/user/budget?username=abhi&budget=${inputBudget}`
+      );
+
+      console.log(`response - ${JSON.stringify(response.data)}`);
+      notify(response.data.message, "success");
+      setBudget(inputBudget); // Update the budget state when the "Update Budget" button is clicked
+    } catch (error) {
+      console.error(error);
+      notify(error.response.data.message, "error");
     }
   };
 
-  // Function to calculate the total expenses
-  const calculateTotalExpenses = () => {
-    return expensesList.reduce((total, exp) => total + exp, 0);
-  };
-
   const RenderContent = () => {
-    const inputStyles = {
-      color: "white",
-      borderColor: "white", // Set the border color to white
-    };
-
     return (
       <div className="container-fluid">
         <div className="row">
@@ -40,54 +68,60 @@ const BudgetTrackingComponent = () => {
             <TextField
               label="Enter Budget"
               type="number"
-              value={budget}
-              onChange={(e) => setBudget(parseFloat(e.target.value) || 0)}
+              defaultValue={inputBudget} // Use value instead of defaultValue
+              onChange={(e) => (inputBudget = e.target.value)} // Update the local variable on change
               fullWidth
               margin="normal"
-              style={inputStyles} // Apply styles directly to TextField
-              InputProps={{
-                style: inputStyles,
-              }}
-              variant="outlined" // Add this line to set the variant to outlined
-            />
-
-            <TextField
-              label="Enter Expense"
-              type="number"
-              value={expense}
-              onChange={(e) => setExpense(parseFloat(e.target.value) || 0)}
-              fullWidth
-              margin="normal"
-              style={inputStyles} // Apply styles directly to TextField
-              InputProps={{
-                style: inputStyles,
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "white", // Changes the color of the border
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "white", // Changes the color of the border on hover
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "white", // Changes the color of the border when focused
+                  },
+                  "& input": {
+                    // Changes the color of the input text
+                    color: "white",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "white", // Changes the color of the label
+                },
               }}
               variant="outlined" // Add this line to set the variant to outlined
             />
 
             <Button
+              className="m-2"
               variant="contained"
               color="primary"
-              onClick={handleAddExpense}
+              onClick={updateBudget}
             >
-              Add Expense
+              Update Budget
             </Button>
 
-            <Typography variant="h6" gutterBottom style={{ marginTop: "20px" }}>
-              Expenses List
-            </Typography>
-            <ul>
-              {expensesList.map((exp, index) => (
-                <li key={index}>{exp}</li>
-              ))}
-            </ul>
+            <Link href="/add-expense">
+              <Button className="m-2" variant="contained" color="primary">
+                Add Expense
+              </Button>
+            </Link>
+
+            <Link href="/expenses">
+              <Button className="m-2" variant="contained" color="primary">
+                Show All Expenses
+              </Button>
+            </Link>
 
             <Typography variant="h6" gutterBottom style={{ marginTop: "20px" }}>
-              Remaining Budget: ${remainingBudget.toFixed(2)}
+              Remaining Budget: ${remainingBudget}
             </Typography>
 
             <Typography variant="h6" gutterBottom>
-              Total Expenses: ${calculateTotalExpenses().toFixed(2)}
+              Total Expenses: ${totalExpense}
             </Typography>
           </div>
         </div>

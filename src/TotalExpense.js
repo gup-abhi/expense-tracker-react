@@ -9,7 +9,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import LoadingSpinner from "./LoadingSpinner";
 
-const TotalExpense = () => {
+const TotalExpense = ({ month, year }) => {
   const [total, setTotal] = useState(0);
   const [budget, setBudget] = useState(0);
   const [budgetLeftPercentage, setBudgetLeftPercentage] = useState(0);
@@ -19,26 +19,29 @@ const TotalExpense = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const totalExpenseResponse = await axios.get(
-          `${API_BASE_URL}/expense/getTotalAmountForEachCategory?username=abhi&year=2024&month=01&category_id=17&payment_method_id=8&transaction_type_id=8`
+          `${API_BASE_URL}/expense/getTotalExpenseForMonth?username=abhi&year=${year}&month=${month}`
         );
         const budgetResponse = await axios.get(
           `${API_BASE_URL}/user/budget?username=abhi`
         );
 
-        setTotal(totalExpenseResponse.data[0]?.total || 0);
+        setTotal(totalExpenseResponse.data.total_expense || 0);
         setBudget(budgetResponse.data.budget || 0);
         setLoading(false);
       } catch (error) {
         console.error(error.response?.data?.message || error.message);
-        setError("Error fetching data");
+        setError(error.response.data.message);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [month, year]);
 
   useEffect(() => {
     setBudgetLeftPercentage(Math.round((total / budget) * 100));
