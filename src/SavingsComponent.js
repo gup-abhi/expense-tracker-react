@@ -4,11 +4,15 @@ import CardComponent from "./CardComponent";
 import axios from "axios";
 import API_BASE_URL from "./config/config";
 import { notify } from "./Notification";
+import { useSelector, useDispatch } from "react-redux";
+import setGoal from "./store/actions/goalActions";
+import setSavings from "./store/actions/savingsActions";
 
 const SavingsComponent = ({ month, year }) => {
   // State for savings goal and current savings
-  const [goal, setGoal] = useState(0);
-  const [currentSavings, setCurrentSavings] = useState(0);
+  const goal = useSelector((state) => state.goalReducer);
+  const currentSavings = useSelector((state) => state.savingsReducer);
+  const dispatch = useDispatch();
 
   let inputGoal = 0; // Use a local variable for the input field
 
@@ -23,8 +27,8 @@ const SavingsComponent = ({ month, year }) => {
           `${API_BASE_URL}/user/goal?username=abhi`
         );
 
-        setGoal(goalResponse.data.goal);
-        setCurrentSavings(savingsResponse.data.savings);
+        updateGoalState(goalResponse.data.goal);
+        updateSavingsState(savingsResponse.data.savings);
       } catch (error) {
         console.error(error);
       }
@@ -36,6 +40,14 @@ const SavingsComponent = ({ month, year }) => {
   // Function to calculate the progress percentage
   const calculateProgress = () => {
     return (currentSavings / goal) * 100;
+  };
+
+  const updateGoalState = (goal) => {
+    dispatch(setGoal(goal));
+  };
+
+  const updateSavingsState = (savings) => {
+    dispatch(setSavings(savings));
   };
 
   const updateGoal = async () => {
@@ -50,7 +62,7 @@ const SavingsComponent = ({ month, year }) => {
       );
 
       console.log(`response - ${JSON.stringify(response.data)}`);
-      setGoal(inputGoal); // Update the state when the "Update" button is clicked
+      updateGoalState(inputGoal); // Update the state when the "Update" button is clicked
       notify(response.data.message, "success");
     } catch (error) {
       console.error(error);

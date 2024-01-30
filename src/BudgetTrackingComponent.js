@@ -4,11 +4,14 @@ import CardComponent from "./CardComponent";
 import axios from "axios";
 import API_BASE_URL from "./config/config";
 import { notify } from "./Notification";
+import { useSelector, useDispatch } from "react-redux";
+import setBudget from "./store/actions/budgetActions";
 
 const BudgetTrackingComponent = ({ year, month }) => {
-  const [budget, setBudget] = useState(0);
+  const budget = useSelector((state) => state.budgetReducer);
   const [totalExpense, setTotalExpense] = useState(0);
   const [remainingBudget, setRemainingBudget] = useState(0);
+  const dispatch = useDispatch();
 
   let inputBudget = 0;
 
@@ -27,7 +30,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
 
         setRemainingBudget(remainingBudgetResponse.data.remaining_budget);
         setTotalExpense(totalExpenseResponse.data.total_expense);
-        setBudget(budgetResponse.data.budget); // Set the input field to the current budget
+        updateBudgetState(budgetResponse.data.budget);
       } catch (error) {
         console.error(error);
       }
@@ -35,6 +38,10 @@ const BudgetTrackingComponent = ({ year, month }) => {
 
     fetchData();
   }, [year, month, budget]); // Remove budget from the dependencies
+
+  const updateBudgetState = (budget) => {
+    dispatch(setBudget(budget));
+  };
 
   const updateBudget = async () => {
     if (Number(inputBudget) === 0 || Number(inputBudget) < 0) {
@@ -49,7 +56,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
 
       console.log(`response - ${JSON.stringify(response.data)}`);
       notify(response.data.message, "success");
-      setBudget(inputBudget); // Update the budget state when the "Update Budget" button is clicked
+      updateBudgetState(inputBudget); // Update the budget state when the "Update Budget" button is clicked
     } catch (error) {
       console.error(error);
       notify(error.response.data.message, "error");
@@ -68,7 +75,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
             <TextField
               label="Enter Budget"
               type="number"
-              defaultValue={inputBudget} // Use value instead of defaultValue
+              defaultValue={budget} // Use value instead of defaultValue
               onChange={(e) => (inputBudget = e.target.value)} // Update the local variable on change
               fullWidth
               margin="normal"

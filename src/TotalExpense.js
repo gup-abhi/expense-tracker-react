@@ -8,10 +8,12 @@ import { Typography } from "@mui/material";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import LoadingSpinner from "./LoadingSpinner";
+import { useSelector } from "react-redux";
 
 const TotalExpense = ({ month, year }) => {
   const [total, setTotal] = useState(0);
-  const [budget, setBudget] = useState(0);
+  const budget = useSelector((state) => state.budgetReducer);
+  const savings = useSelector((state) => state.savingsReducer);
   const [budgetLeftPercentage, setBudgetLeftPercentage] = useState(0);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,12 +27,8 @@ const TotalExpense = ({ month, year }) => {
         const totalExpenseResponse = await axios.get(
           `${API_BASE_URL}/expense/getTotalExpenseForMonth?username=abhi&year=${year}&month=${month}`
         );
-        const budgetResponse = await axios.get(
-          `${API_BASE_URL}/user/budget?username=abhi`
-        );
 
         setTotal(totalExpenseResponse.data.total_expense || 0);
-        setBudget(budgetResponse.data.budget || 0);
         setLoading(false);
       } catch (error) {
         console.error(error.response?.data?.message || error.message);
@@ -54,13 +52,15 @@ const TotalExpense = ({ month, year }) => {
     return (
       <>
         <Typography variant="h6">Total Expense - {total}</Typography>
-        <Divider component="h3" />
+        <Divider component="h6" />
         <Typography variant="h6">Total Budget - {budget}</Typography>
-        <Divider component="h3" />
+        <Divider component="h6" />
+        <Typography variant="h6">Total Savings - {savings}</Typography>
+        <Divider component="h6" />
         <Box className="py-2" sx={{ width: "100%" }}>
           <Typography variant="h6">Budget Utilised</Typography>
           <div
-            className="col-5 offset-3"
+            className="col-4 col-lg-5 offset-4 offset-lg-3"
             style={{ height: "250px", width: "250px" }}
           >
             <CircularProgressbar

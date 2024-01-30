@@ -41,7 +41,7 @@ const ExpenseBreakdown = ({ year, month }) => {
     return (
       <Grid container spacing={2}>
         {expenseBreakdown.map((expense, index) => (
-          <Grid item xs={4} key={index}>
+          <Grid item xs={6} lg={4} key={index}>
             <em>
               {expense.label} - {expense.value}
             </em>
