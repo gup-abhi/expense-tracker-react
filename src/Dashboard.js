@@ -52,7 +52,13 @@ const Dashboard = () => {
   return (
     <div className="dashboard container-fluid">
       {/* Render Components with selected dropdown values */}
-      <Grid container spacing={2}>
+      <Grid
+        container
+        rowSpacing={0.5}
+        columnSpacing={2}
+        direction="row"
+        alignItems="stretch"
+      >
         <Grid item xs={12}>
           <h1 className="text-center py-2 fw-bolder">
             Expense Tracker Dashboard
@@ -60,42 +66,42 @@ const Dashboard = () => {
         </Grid>
 
         {/* Render Dropdowns */}
-        <Grid container spacing={2} m={3}>
-          <Grid item lg={6} />
-          <Grid item xs={12} lg={3}>
-            <Typography variant="subtitle1">Month:</Typography>
-            <Select
-              label="Month"
-              id="month"
-              name="month"
-              value={month}
-              onChange={handleDropdownChange}
-              fullWidth
-            >
-              {monthOptions}
-            </Select>
-          </Grid>
-          <Grid item xs={12} lg={3}>
-            <Typography variant="subtitle1">Year:</Typography>
-            <Select
-              label="Year"
-              id="year"
-              name="year"
-              value={year.toString()}
-              onChange={handleDropdownChange}
-              fullWidth
-            >
-              {yearOptions}
-            </Select>
-          </Grid>
+        {/* <Grid container spacing={2} m={3}> */}
+        <Grid item lg={6} />
+        <Grid item xs={12} lg={3}>
+          <Typography variant="subtitle1">Month:</Typography>
+          <Select
+            label="Month"
+            id="month"
+            name="month"
+            value={month}
+            onChange={handleDropdownChange}
+            fullWidth
+          >
+            {monthOptions}
+          </Select>
         </Grid>
+        <Grid item xs={12} lg={3}>
+          <Typography variant="subtitle1">Year:</Typography>
+          <Select
+            label="Year"
+            id="year"
+            name="year"
+            value={year.toString()}
+            onChange={handleDropdownChange}
+            fullWidth
+          >
+            {yearOptions}
+          </Select>
+        </Grid>
+        {/* </Grid> */}
 
         <Grid item xs={12} lg={6}>
           <TotalExpense month={month} year={year} />
         </Grid>
 
         <Grid item xs={12} lg={6}>
-          <ExpenseBreakdown month={month} year={year} />
+          <ExpenseTrendsComponent month={month} year={year} />
         </Grid>
 
         <Grid item xs={12} lg={6}>
@@ -111,7 +117,7 @@ const Dashboard = () => {
         </Grid>
 
         <Grid item xs={12} lg={6}>
-          <ExpenseTrendsComponent month={month} year={year} />
+          <ExpenseBreakdown month={month} year={year} />
         </Grid>
 
         {/* <Grid item xs={12}>

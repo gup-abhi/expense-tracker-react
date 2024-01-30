@@ -39,7 +39,8 @@ const BudgetTrackingComponent = ({ year, month }) => {
         updateBudgetState(budgetResponse.data.budget);
       } catch (error) {
         console.error(error);
-        setError(error.response.data.message);
+        setError(`No budget found for ${year}-${month}`);
+        updateBudgetState(0);
       } finally {
         setLoading(false);
       }
@@ -74,7 +75,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
 
   const renderContent = () => {
     if (loading) return <LoadingSpinner />; // Use the LoadingSpinner component here
-    if (error) return <h3>{error}</h3>;
+    if (error) return <h6 className="my-2">{error}</h6>;
 
     return (
       <>
@@ -129,7 +130,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
             />
 
             <Button
-              className="m-2"
+              className="ml-2"
               variant="contained"
               color="primary"
               onClick={updateBudget}
@@ -138,13 +139,13 @@ const BudgetTrackingComponent = ({ year, month }) => {
             </Button>
 
             <Link href="/add-expense">
-              <Button className="m-2" variant="contained" color="primary">
+              <Button className="mx-2" variant="contained" color="primary">
                 Add Expense
               </Button>
             </Link>
 
             <Link href="/expenses">
-              <Button className="m-2" variant="contained" color="primary">
+              <Button className="ml-2" variant="contained" color="primary">
                 Show All Expenses
               </Button>
             </Link>

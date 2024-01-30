@@ -37,7 +37,8 @@ const SavingsComponent = ({ month, year }) => {
         updateSavingsState(savingsResponse.data.savings);
       } catch (error) {
         console.error(error);
-        setError(error.response.data.message);
+        updateGoalState(0);
+        setError(`No savings data found for ${year}-${month}`);
       } finally {
         setLoading(false);
       }
@@ -81,7 +82,7 @@ const SavingsComponent = ({ month, year }) => {
 
   const renderContent = () => {
     if (loading) return <LoadingSpinner />; // Use the LoadingSpinner component here
-    if (error) return <h3>{error}</h3>;
+    if (error) return <h6 className="my-2">{error}</h6>;
     return (
       <>
         <LinearProgress

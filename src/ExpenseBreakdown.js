@@ -24,7 +24,7 @@ const ExpenseBreakdown = ({ year, month }) => {
         setExpenseBreakdown(response.data);
       } catch (error) {
         console.error(error);
-        setError(error.response.data.message);
+        setError(`No expense breakdown found for ${year}-${month}`);
       } finally {
         setLoading(false);
       }
@@ -35,8 +35,8 @@ const ExpenseBreakdown = ({ year, month }) => {
 
   const renderExpense = () => {
     if (loading) return <LoadingSpinner />;
-    if (error) return <h3>{error}</h3>;
-    if (expenseBreakdown.length === 0) return <h3>No Data to show</h3>;
+    if (error) return <h6 className="my-2">{error}</h6>;
+    // if (expenseBreakdown.length === 0) return <h3>No Data to show</h3>;
 
     return (
       <Grid container spacing={2}>

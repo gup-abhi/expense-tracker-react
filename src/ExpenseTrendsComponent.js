@@ -49,7 +49,7 @@ const ExpenseTrendsComponent = ({ year, month }) => {
         setExpenseData(response.data);
       } catch (error) {
         console.error(error.response.data.message);
-        setError(error.response.data.message);
+        setError(`No expense trends found for ${year}-${month}`);
       } finally {
         setLoading(false);
       }
@@ -60,7 +60,7 @@ const ExpenseTrendsComponent = ({ year, month }) => {
 
   const renderContent = () => {
     if (loading) return <LoadingSpinner />; // Use the LoadingSpinner component here
-    if (error) return <h3>{error}</h3>;
+    if (error) return <h6 className="my-2">{error}</h6>;
     return (
       <ResponsiveContainer width="100%" height={300}>
         <LineChart

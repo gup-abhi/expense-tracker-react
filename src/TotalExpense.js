@@ -31,7 +31,9 @@ const TotalExpense = ({ month, year }) => {
         setTotal(totalExpenseResponse.data.total_expense || 0);
       } catch (error) {
         console.error(error.response?.data?.message || error.message);
-        setError(error.response.data.message);
+        setError(`No total expense found for ${year}-${month}`);
+        setTotal(0);
+        setBudgetLeftPercentage(0);
       } finally {
         setLoading(false);
       }
@@ -46,7 +48,7 @@ const TotalExpense = ({ month, year }) => {
 
   const renderContent = () => {
     if (loading) return <LoadingSpinner />; // Use the LoadingSpinner component here
-    if (error) return <h3>{error}</h3>;
+    if (error) return <h6 className="my-2">{error}</h6>;
 
     return (
       <>
@@ -56,16 +58,16 @@ const TotalExpense = ({ month, year }) => {
         <Divider component="h6" />
         <Typography variant="h6">Total Savings : {savings}</Typography>
         <Divider component="h6" />
-        <Box className="py-2" sx={{ width: "100%" }}>
+        <Box className="py-2">
           <Typography variant="h6">Budget Utilised</Typography>
           <div
-            className="col-3 col-lg-5 offset-2 offset-lg-3"
+            className="col-4 col-lg-5 offset-3 offset-lg-4"
             style={{
               display: "flex",
               justifyContent: "center",
               alignContent: "center",
-              height: "250px",
-              width: "250px",
+              height: "150px",
+              width: "150px",
             }}
           >
             <CircularProgressbar
