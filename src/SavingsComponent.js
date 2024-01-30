@@ -7,18 +7,24 @@ import { notify } from "./Notification";
 import { useSelector, useDispatch } from "react-redux";
 import setGoal from "./store/actions/goalActions";
 import setSavings from "./store/actions/savingsActions";
+import LoadingSpinner from "./LoadingSpinner";
 
 const SavingsComponent = ({ month, year }) => {
   // State for savings goal and current savings
   const goal = useSelector((state) => state.goalReducer);
   const currentSavings = useSelector((state) => state.savingsReducer);
   const dispatch = useDispatch();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   let inputGoal = 0; // Use a local variable for the input field
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const savingsResponse = await axios.get(
           `${API_BASE_URL}/user/savings?username=abhi&year=${year}&month=${month}`
         );
@@ -31,11 +37,14 @@ const SavingsComponent = ({ month, year }) => {
         updateSavingsState(savingsResponse.data.savings);
       } catch (error) {
         console.error(error);
+        setError(error.response.data.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [year, month]);
+  }, [year, month, goal]);
 
   // Function to calculate the progress percentage
   const calculateProgress = () => {
@@ -68,6 +77,28 @@ const SavingsComponent = ({ month, year }) => {
       console.error(error);
       notify(error.response.data.message, "error");
     }
+  };
+
+  const renderContent = () => {
+    if (loading) return <LoadingSpinner />; // Use the LoadingSpinner component here
+    if (error) return <h3>{error}</h3>;
+    return (
+      <>
+        <LinearProgress
+          variant="determinate"
+          value={calculateProgress()}
+          style={{ marginTop: "20px" }}
+        />
+
+        <Typography variant="h6" gutterBottom style={{ marginTop: "10px" }}>
+          Current Savings: ${currentSavings}
+        </Typography>
+
+        <Typography variant="h6" gutterBottom>
+          Goal: ${goal}
+        </Typography>
+      </>
+    );
   };
 
   const RenderContent = () => {
@@ -112,19 +143,7 @@ const SavingsComponent = ({ month, year }) => {
               Update
             </Button>
 
-            <LinearProgress
-              variant="determinate"
-              value={calculateProgress()}
-              style={{ marginTop: "20px" }}
-            />
-
-            <Typography variant="h6" gutterBottom style={{ marginTop: "10px" }}>
-              Current Savings: ${currentSavings}
-            </Typography>
-
-            <Typography variant="h6" gutterBottom>
-              Goal: ${goal}
-            </Typography>
+            {renderContent()}
           </div>
         </div>
       </div>

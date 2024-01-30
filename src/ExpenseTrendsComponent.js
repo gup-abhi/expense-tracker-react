@@ -13,6 +13,7 @@ import CardComponent from "./CardComponent";
 import axios from "axios";
 import API_BASE_URL from "./config/config";
 import { ResponsiveContainer } from "recharts";
+import LoadingSpinner from "./LoadingSpinner";
 
 const ExpenseTrendsComponent = ({ year, month }) => {
   // Sample data for expense trends over time
@@ -31,10 +32,15 @@ const ExpenseTrendsComponent = ({ year, month }) => {
     "Nov",
     "Dec",
   ];
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const response = await axios.get(
           `${API_BASE_URL}/expense/getTotalExpense?username=abhi&year=${year}`
         );
@@ -43,11 +49,42 @@ const ExpenseTrendsComponent = ({ year, month }) => {
         setExpenseData(response.data);
       } catch (error) {
         console.error(error.response.data.message);
+        setError(error.response.data.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [year, month]);
+
+  const renderContent = () => {
+    if (loading) return <LoadingSpinner />; // Use the LoadingSpinner component here
+    if (error) return <h3>{error}</h3>;
+    return (
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart
+          data={expenseData}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="month"
+            tickFormatter={(monthNumber) => monthNames[monthNumber - 1]}
+          />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="total_expense"
+            stroke="#8884d8"
+            name="Expense"
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    );
+  };
 
   const RenderComponent = () => {
     return (
@@ -58,27 +95,7 @@ const ExpenseTrendsComponent = ({ year, month }) => {
               Expense Trends
             </Typography>
 
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart
-                data={expenseData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="month"
-                  tickFormatter={(monthNumber) => monthNames[monthNumber - 1]}
-                />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="total_expense"
-                  stroke="#8884d8"
-                  name="Expense"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {renderContent()}
           </div>
         </div>
       </div>

@@ -6,18 +6,24 @@ import API_BASE_URL from "./config/config";
 import { notify } from "./Notification";
 import { useSelector, useDispatch } from "react-redux";
 import setBudget from "./store/actions/budgetActions";
+import LoadingSpinner from "./LoadingSpinner";
 
 const BudgetTrackingComponent = ({ year, month }) => {
   const budget = useSelector((state) => state.budgetReducer);
   const [totalExpense, setTotalExpense] = useState(0);
   const [remainingBudget, setRemainingBudget] = useState(0);
   const dispatch = useDispatch();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   let inputBudget = 0;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const remainingBudgetResponse = await axios.get(
           `${API_BASE_URL}/user/budget/remaining?username=abhi&year=${year}&month=${month}`
         );
@@ -33,6 +39,9 @@ const BudgetTrackingComponent = ({ year, month }) => {
         updateBudgetState(budgetResponse.data.budget);
       } catch (error) {
         console.error(error);
+        setError(error.response.data.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -61,6 +70,23 @@ const BudgetTrackingComponent = ({ year, month }) => {
       console.error(error);
       notify(error.response.data.message, "error");
     }
+  };
+
+  const renderContent = () => {
+    if (loading) return <LoadingSpinner />; // Use the LoadingSpinner component here
+    if (error) return <h3>{error}</h3>;
+
+    return (
+      <>
+        <Typography variant="h6" gutterBottom style={{ marginTop: "20px" }}>
+          Remaining Budget: ${remainingBudget}
+        </Typography>
+
+        <Typography variant="h6" gutterBottom>
+          Total Expenses: ${totalExpense}
+        </Typography>
+      </>
+    );
   };
 
   const RenderContent = () => {
@@ -123,13 +149,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
               </Button>
             </Link>
 
-            <Typography variant="h6" gutterBottom style={{ marginTop: "20px" }}>
-              Remaining Budget: ${remainingBudget}
-            </Typography>
-
-            <Typography variant="h6" gutterBottom>
-              Total Expenses: ${totalExpense}
-            </Typography>
+            {renderContent()}
           </div>
         </div>
       </div>

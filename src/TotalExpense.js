@@ -29,7 +29,6 @@ const TotalExpense = ({ month, year }) => {
         );
 
         setTotal(totalExpenseResponse.data.total_expense || 0);
-        setLoading(false);
       } catch (error) {
         console.error(error.response?.data?.message || error.message);
         setError(error.response.data.message);
