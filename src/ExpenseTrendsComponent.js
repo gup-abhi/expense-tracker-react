@@ -12,6 +12,7 @@ import {
 import CardComponent from "./CardComponent";
 import axios from "axios";
 import API_BASE_URL from "./config/config";
+import { ResponsiveContainer } from "recharts";
 
 const ExpenseTrendsComponent = ({ year, month }) => {
   // Sample data for expense trends over time
@@ -57,27 +58,27 @@ const ExpenseTrendsComponent = ({ year, month }) => {
               Expense Trends
             </Typography>
 
-            <LineChart
-              width={500}
-              height={300}
-              data={expenseData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="month"
-                tickFormatter={(monthNumber) => monthNames[monthNumber - 1]}
-              />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="total_expense"
-                stroke="#8884d8"
-                name="Expense"
-              />
-            </LineChart>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart
+                data={expenseData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="month"
+                  tickFormatter={(monthNumber) => monthNames[monthNumber - 1]}
+                />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="total_expense"
+                  stroke="#8884d8"
+                  name="Expense"
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>

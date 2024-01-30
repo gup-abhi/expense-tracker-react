@@ -51,17 +51,23 @@ const TotalExpense = ({ month, year }) => {
 
     return (
       <>
-        <Typography variant="h6">Total Expense - {total}</Typography>
+        <Typography variant="h6">Total Expense : {total}</Typography>
         <Divider component="h6" />
-        <Typography variant="h6">Total Budget - {budget}</Typography>
+        <Typography variant="h6">Total Budget : {budget}</Typography>
         <Divider component="h6" />
-        <Typography variant="h6">Total Savings - {savings}</Typography>
+        <Typography variant="h6">Total Savings : {savings}</Typography>
         <Divider component="h6" />
         <Box className="py-2" sx={{ width: "100%" }}>
           <Typography variant="h6">Budget Utilised</Typography>
           <div
-            className="col-4 col-lg-5 offset-4 offset-lg-3"
-            style={{ height: "250px", width: "250px" }}
+            className="col-3 col-lg-5 offset-2 offset-lg-3"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignContent: "center",
+              height: "250px",
+              width: "250px",
+            }}
           >
             <CircularProgressbar
               value={budgetLeftPercentage}
