@@ -135,49 +135,45 @@ const RecurringExpense = () => {
     <div className="container-fluid">
       <div className="row">
         <div className="col-12">
-          <Typography className="text-center my-3" variant="h4">
+          <Typography className="text-center my-3 fw-bolder" variant="h4">
             Recurring Expense
           </Typography>
         </div>
-        <div className="row">
-          <div className="col-12">
-            <TableContainer component={Paper}>
-              <Table aria-label="Expense table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell align="left">Edit</StyledTableCell>
-                    <StyledTableCell align="left">Exepense</StyledTableCell>
-                    <StyledTableCell align="left">Category</StyledTableCell>
-                    <StyledTableCell align="left">
-                      Transaction Type
-                    </StyledTableCell>
-                    <StyledTableCell align="left">
-                      Payment Method
-                    </StyledTableCell>
-                    <StyledTableCell align="left">Amount</StyledTableCell>
-                    <StyledTableCell align="left">Start Date</StyledTableCell>
-                    <StyledTableCell align="left">
-                      Next Due Date
-                    </StyledTableCell>
-                    <StyledTableCell align="left">Frequency</StyledTableCell>
-                    <StyledTableCell align="left">Delete</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>{renderContent()}</TableBody>
-              </Table>
-            </TableContainer>
-          </div>
+      </div>
+      <div className="row">
+        <div className="col-12">
+          <TableContainer component={Paper}>
+            <Table aria-label="Expense table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="left">Edit</StyledTableCell>
+                  <StyledTableCell align="left">Exepense</StyledTableCell>
+                  <StyledTableCell align="left">Category</StyledTableCell>
+                  <StyledTableCell align="left">
+                    Transaction Type
+                  </StyledTableCell>
+                  <StyledTableCell align="left">Payment Method</StyledTableCell>
+                  <StyledTableCell align="left">Amount</StyledTableCell>
+                  <StyledTableCell align="left">Start Date</StyledTableCell>
+                  <StyledTableCell align="left">Next Due Date</StyledTableCell>
+                  <StyledTableCell align="left">Frequency</StyledTableCell>
+                  <StyledTableCell align="left">Delete</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>{renderContent()}</TableBody>
+            </Table>
+          </TableContainer>
         </div>
-        <div className="row">
-          <div className="col-12 col-lg-2 offset-lg-10">
-            <Button
-              className="my-3"
-              variant="contained"
-              onClick={addRecurringExpense}
-            >
-              Add Recurring Exepnse
-            </Button>
-          </div>
+      </div>
+      <div className="row">
+        <div className="col-12 col-lg-2 offset-lg-10">
+          <Button
+            className="my-3"
+            variant="contained"
+            onClick={addRecurringExpense}
+          >
+            Add Recurring Exepnse
+          </Button>
         </div>
       </div>
     </div>

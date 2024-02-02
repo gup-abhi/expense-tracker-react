@@ -51,24 +51,16 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard container-fluid">
-      {/* Render Components with selected dropdown values */}
-      <Grid
-        container
-        rowSpacing={0.5}
-        columnSpacing={2}
-        direction="row"
-        alignItems="stretch"
-      >
-        <Grid item xs={12}>
+      <div className="row">
+        <div className="col-12">
           <h1 className="text-center py-2 fw-bolder">
             Expense Tracker Dashboard
           </h1>
-        </Grid>
-
-        {/* Render Dropdowns */}
-        {/* <Grid container spacing={2} m={3}> */}
-        <Grid item lg={6} />
-        <Grid item xs={12} lg={3}>
+        </div>
+      </div>
+      <div className="row my-2">
+        <div className="col-lg-6"></div>
+        <div className="col-lg-3 col-12">
           <Typography variant="subtitle1">Month:</Typography>
           <Select
             label="Month"
@@ -80,8 +72,8 @@ const Dashboard = () => {
           >
             {monthOptions}
           </Select>
-        </Grid>
-        <Grid item xs={12} lg={3}>
+        </div>
+        <div className="col-lg-3 col-12">
           <Typography variant="subtitle1">Year:</Typography>
           <Select
             label="Year"
@@ -93,37 +85,28 @@ const Dashboard = () => {
           >
             {yearOptions}
           </Select>
-        </Grid>
-        {/* </Grid> */}
-
-        <Grid item xs={12} lg={6}>
+        </div>
+      </div>
+      <div className="row row-flex">
+        <div className="col-lg-6 col-12">
           <TotalExpense month={month} year={year} />
-        </Grid>
-
-        <Grid item xs={12} lg={6}>
+        </div>
+        <div className="col-lg-6 col-12">
           <ExpenseTrendsComponent month={month} year={year} />
-        </Grid>
-
-        <Grid item xs={12} lg={6}>
+        </div>
+        <div className="col-lg-6 col-12">
           <BudgetTrackingComponent month={month} year={year} />
-        </Grid>
-
-        <Grid item xs={12} lg={6}>
+        </div>
+        <div className="col-lg-6 col-12">
           <SavingsComponent month={month} year={year} />
-        </Grid>
-
-        <Grid item xs={12} lg={6}>
+        </div>
+        <div className="col-lg-6 col-12">
           <TopExpensesComponent month={month} year={year} />
-        </Grid>
-
-        <Grid item xs={12} lg={6}>
+        </div>
+        <div className="col-lg-6 col-12">
           <ExpenseBreakdown month={month} year={year} />
-        </Grid>
-
-        {/* <Grid item xs={12}>
-          <AlertsRemindersComponent month={month} year={year} />
-        </Grid> */}
-      </Grid>
+        </div>
+      </div>
     </div>
   );
 };
