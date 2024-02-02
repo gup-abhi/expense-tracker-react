@@ -218,14 +218,14 @@ const AddOrUpdateRecurringExepnse = () => {
   };
 
   const renderHeading = () => {
-    if (expense) return <h6 className="fw-bolder">Update Recurring Expense</h6>;
-    return <h6 className="fw-bolder">Add Recurring Expense</h6>;
+    if (expense) return <h1 className="fw-bolder">Update Recurring Expense</h1>;
+    return <h1 className="fw-bolder">Add Recurring Expense</h1>;
   };
 
   return (
     <div className="container">
       <div className="row">
-        <div className="col-12 col-lg-6 offset-lg-3">
+        <div className="col-12 col-md-7 col-lg-7 offset-lg-3 offset-md-3">
           <div className="row p-2">
             <div className="col-4">
               <Button

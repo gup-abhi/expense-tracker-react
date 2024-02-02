@@ -52,12 +52,25 @@ const TotalExpense = ({ month, year }) => {
 
     return (
       <>
-        <Typography variant="h6">Total Expense : {total}</Typography>
-        <Divider component="h6" />
-        <Typography variant="h6">Total Budget : {budget}</Typography>
-        <Divider component="h6" />
-        <Typography variant="h6">Total Savings : {savings}</Typography>
-        <Divider component="h6" />
+        <div className="col-8 col-lg-3">
+          <Typography variant="h6">Total Expense :</Typography>
+        </div>
+        <div className="col-4 col-lg-9">
+          <Typography variant="h6"> ${total}</Typography>
+        </div>
+        <div className="col-8 col-lg-3">
+          <Typography variant="h6">Total Budget :</Typography>
+        </div>
+        <div className="col-4 col-lg-9">
+          <Typography variant="h6"> ${budget}</Typography>
+        </div>
+        <div className="col-8 col-lg-3">
+          <Typography variant="h6">Total Savings :</Typography>
+        </div>
+        <div className="col-4 col-lg-9">
+          <Typography variant="h6"> ${savings}</Typography>
+        </div>
+
         <Box className="py-2">
           <Typography variant="h6">Budget Utilised</Typography>
           <div
@@ -94,9 +107,9 @@ const TotalExpense = ({ month, year }) => {
             <Typography variant="h5" gutterBottom>
               Total Expense
             </Typography>
-            {renderContent()}
           </div>
         </div>
+        <div className="row">{renderContent()}</div>
       </div>
     );
   };

@@ -49,7 +49,8 @@ const SavingsComponent = ({ month, year }) => {
 
   // Function to calculate the progress percentage
   const calculateProgress = () => {
-    return (currentSavings / goal) * 100;
+    if (currentSavings < 0) return 0;
+    return Math.round((currentSavings / goal) * 100);
   };
 
   const updateGoalState = (goal) => {
@@ -85,19 +86,27 @@ const SavingsComponent = ({ month, year }) => {
     if (error) return <h6 className="my-2">{error}</h6>;
     return (
       <>
-        <LinearProgress
-          variant="determinate"
-          value={calculateProgress()}
-          style={{ marginTop: "20px" }}
-        />
+        <div className="col-10">
+          <LinearProgress
+            variant="determinate"
+            value={calculateProgress()}
+            style={{ marginTop: "20px" }}
+          />
+        </div>
+        <div className="col-2 py-2">
+          <Typography variant="em">{calculateProgress()}%</Typography>
+        </div>
 
-        <Typography variant="h6" gutterBottom style={{ marginTop: "10px" }}>
-          Current Savings: ${currentSavings}
-        </Typography>
-
-        <Typography variant="h6" gutterBottom>
-          Goal: ${goal}
-        </Typography>
+        <div className="col-12">
+          <Typography variant="h6" gutterBottom style={{ marginTop: "10px" }}>
+            Current Savings: ${currentSavings}
+          </Typography>
+        </div>
+        <div className="col-12">
+          <Typography variant="h6" gutterBottom>
+            Goal: $ {goal}
+          </Typography>
+        </div>
       </>
     );
   };
@@ -110,7 +119,10 @@ const SavingsComponent = ({ month, year }) => {
             <Typography variant="h5" gutterBottom>
               Savings Tracker
             </Typography>
-
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-6">
             <TextField
               label="Savings Goal"
               type="number"
@@ -139,14 +151,19 @@ const SavingsComponent = ({ month, year }) => {
                 },
               }}
             />
-
-            <Button variant="contained" color="primary" onClick={updateGoal}>
+          </div>
+          <div className="col-6">
+            <Button
+              className="my-4"
+              variant="contained"
+              color="primary"
+              onClick={updateGoal}
+            >
               Update
             </Button>
-
-            {renderContent()}
           </div>
         </div>
+        <div className="row">{renderContent()}</div>
       </div>
     );
   };

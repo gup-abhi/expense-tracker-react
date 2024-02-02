@@ -141,7 +141,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
               color="primary"
               onClick={updateBudget}
             >
-              Update Budget
+              Update
             </Button>
           </div>
           <Grid className="my-2" container spacing={2}>
