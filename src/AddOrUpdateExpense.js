@@ -18,141 +18,72 @@ import { notify } from "./Notification";
 const AddOrUpdateExpense = () => {
   const location = useLocation();
   dayjs.extend(utc);
-  let expenseToUpdate = location.state?.expenseToUpdate;
-  const [expenseName, setExpenseName] = useState(
-    expenseToUpdate ? expenseToUpdate.description : ""
-  );
-  const [amount, setAmount] = useState(
-    expenseToUpdate ? expenseToUpdate.amount : 0
-  );
-  const [categories, setCategorioes] = useState([]);
-  const [category, setCategory] = useState(
-    expenseToUpdate ? expenseToUpdate.category_id : categories[0]?.id || ""
-  );
-  const [paymentMethods, setPaymentMethods] = useState([]);
-  const [paymentMethod, setPaymentMethod] = useState(
-    expenseToUpdate
-      ? expenseToUpdate.payment_method_id
-      : paymentMethods[0]?.id || ""
-  );
-  const [transactionTypes, setTransactionTypes] = useState([]);
-  const [transactionType, setTransactionType] = useState(
-    expenseToUpdate
-      ? expenseToUpdate.transaction_type_id
-      : transactionTypes[0]?.id || ""
-  );
-  const [selectedDate, setSelectedDate] = useState(
-    expenseToUpdate ? dayjs.utc(expenseToUpdate.date) : null
-  );
   const navigate = useNavigate();
+  const expense = location.state?.expenseToUpdate;
+  const [form, setForm] = useState({
+    description: "",
+    category_id: 0,
+    payment_method_id: 0,
+    transaction_type_id: 0,
+    amount: 0,
+    date: "",
+    username: "abhi",
+  });
 
-  useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/category`);
-        console.log(`categories - ${JSON.stringify(response.data)}`);
-        setCategorioes(response.data);
-        if (!expenseToUpdate) {
-          setCategory(response.data[0].id);
-        }
-      } catch (error) {
-        notify(error.response.data.message, "error");
-        console.error(error.response.data.message);
-      }
-    };
+  const [categories, setCategorioes] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [transactionTypes, setTransactionTypes] = useState([]);
 
-    getCategories();
-  }, []);
-
-  useEffect(() => {
-    const getPaymentMethods = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/payment`);
-        console.log(`categories - ${JSON.stringify(response.data)}`);
-        setPaymentMethods(response.data);
-        if (!expenseToUpdate) {
-          setPaymentMethod(response.data[0].id);
-        }
-      } catch (error) {
-        notify(error.response.data.message, "error");
-        console.error(error.response.data.message);
-      }
-    };
-
-    getPaymentMethods();
-  }, []);
-
-  useEffect(() => {
-    const getTransactionTypes = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/transaction`);
-        console.log(`categories - ${JSON.stringify(response.data)}`);
-        setTransactionTypes(response.data);
-        if (!expenseToUpdate) {
-          setTransactionType(response.data[0].id);
-        }
-      } catch (error) {
-        notify(error.response.data.message, "error");
-        console.error(error.response.data.message);
-      }
-    };
-
-    getTransactionTypes();
-  }, []);
-
-  useEffect(() => {
-    console.log("expenseToUpdate:", expenseToUpdate);
-    if (expenseToUpdate) {
-      setExpenseName(expenseToUpdate.description);
-      setAmount(expenseToUpdate.amount);
-      setSelectedDate(dayjs(expenseToUpdate.date));
-    }
-  }, [expenseToUpdate]);
-
-  useEffect(() => {
-    // console.log("expenseToUpdate:", expenseToUpdate);
-    if (categories.length > 0) {
-      setCategory(
-        expenseToUpdate ? expenseToUpdate.category_id : categories[0].id
+  const fetchData = async () => {
+    try {
+      const categoryResponse = await axios.get(`${API_BASE_URL}/category`);
+      const paymentMethodResponse = await axios.get(`${API_BASE_URL}/payment`);
+      const transactionTypeResponse = await axios.get(
+        `${API_BASE_URL}/transaction`
       );
-    }
-  }, [categories, expenseToUpdate]);
+      setTransactionTypes(transactionTypeResponse.data);
+      setPaymentMethods(paymentMethodResponse.data);
+      setCategorioes(categoryResponse.data);
 
-  useEffect(() => {
-    // console.log("expenseToUpdate:", expenseToUpdate);
-    if (paymentMethods.length > 0) {
-      setPaymentMethod(
-        expenseToUpdate
-          ? expenseToUpdate.payment_method_id
-          : paymentMethods[0].id
-      );
+      if (expense) {
+        setForm((prev) => ({
+          ...prev,
+          description: expense.description,
+          amount: expense.amount,
+          date: dayjs.utc(expense.date),
+          username: "abhi",
+          category_id: expense.category_id,
+          payment_method_id: expense.payment_method_id,
+          transaction_type_id: expense.transaction_type_id,
+        }));
+      } else {
+        setForm((prevState) => ({
+          ...prevState,
+          category_id: categoryResponse.data[0].id,
+          payment_method_id: paymentMethodResponse.data[0].id,
+          transaction_type_id: transactionTypeResponse.data[0].id,
+        }));
+      }
+    } catch (error) {
+      notify(error.response.data.message, "error");
+      console.error(error.response.data.message);
     }
-  }, [paymentMethods, expenseToUpdate]);
-
-  useEffect(() => {
-    // console.log("expenseToUpdate:", expenseToUpdate);
-    if (transactionTypes.length > 0) {
-      setTransactionType(
-        expenseToUpdate
-          ? expenseToUpdate.transaction_type_id
-          : transactionTypes[0].id
-      );
-    }
-  }, [transactionTypes, expenseToUpdate]);
-
-  const handleDateChange = (date) => {
-    console.log(`date - ${date}`);
-    setSelectedDate(date);
   };
 
-  const reset = () => {
-    expenseToUpdate = undefined;
-    setAmount(0);
-    setExpenseName("");
-    setCategory(categories[0]?.id || "");
-    setPaymentMethod(paymentMethods[0]?.id || "");
-    setTransactionType(transactionTypes[0]?.id || "");
-    setSelectedDate(null);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const resetForm = () => {
+    setForm({
+      description: "",
+      category_id: categories[0].id,
+      payment_method_id: paymentMethods[0].id,
+      transaction_type_id: transactionTypes[0].id,
+      amount: 0,
+      date: "",
+      username: "abhi",
+    });
   };
 
   const formatDate = (date) => {
@@ -161,89 +92,111 @@ const AddOrUpdateExpense = () => {
     }-${new Date(date).getDate()}`;
   };
 
-  const isEdit = () => {
-    console.log(`
-      ${expenseName} :: ${category} :: ${amount} :: ${formatDate(
-      selectedDate
-    )} :: ${paymentMethod} :: ${transactionType} \n
-      ${expenseToUpdate.description} :: ${expenseToUpdate.category_id} :: ${
-      expenseToUpdate.amount
-    } :: ${formatDate(expenseToUpdate.date)} :: ${
-      expenseToUpdate.payment_method_id
-    } :: ${expenseToUpdate.transaction_type_id}
-    `);
+  const updateValidateForm = () => {
     if (
-      expenseToUpdate.description !== expenseName ||
-      expenseToUpdate.category_id !== category ||
-      expenseToUpdate.transaction_type_id !== transactionType ||
-      expenseToUpdate.payment_method_id !== paymentMethod ||
-      expenseToUpdate.amount !== amount ||
-      formatDate(expenseToUpdate.date) !== formatDate(selectedDate)
+      expense.description !== form.description ||
+      expense.category_id !== form.category_id ||
+      expense.transaction_type_id !== form.transaction_type_id ||
+      expense.payment_method_id !== form.payment_method_id ||
+      expense.amount !== form.amount ||
+      formatDate(expense.date) !== formatDate(form.date)
     )
       return true;
     return false;
   };
 
-  const isFilled = () => {
-    console.log(
-      ` ${expenseName} :: ${category} :: ${amount} :: ${selectedDate} :: ${paymentMethod} :: ${transactionType}`
-    );
-    if (expenseName !== "" && amount !== 0 && selectedDate !== null)
+  const postValidateForm = () => {
+    if (form.description !== "" && form.amount !== 0 && form.date !== "")
       return true;
     return false;
   };
 
-  const addOrUpdateExpense = async () => {
+  const createExpense = async () => {
+    console.log(`form - ${JSON.stringify(form)}`);
+
+    if (!postValidateForm())
+      return notify("Please fill all the fields before submitting", "error");
+
     try {
-      let response;
-
-      if (!expenseToUpdate) {
-        // console.log(`Inside`);
-        if (isFilled()) {
-          response = await axios.post(`${API_BASE_URL}/expense`, {
-            username: "abhi",
-            description: expenseName,
-            date: selectedDate.toISOString().split("T")[0],
-            amount: amount,
-            category_id: category,
-            transaction_type_id: transactionType,
-            payment_method_id: paymentMethod,
-          });
-        } else {
-          notify("Please enter all the details before submitting", "error");
-          return;
-        }
-      } else {
-        if (isEdit()) {
-          response = await axios.put(
-            `${API_BASE_URL}/expense?id=${expenseToUpdate.id}`,
-            {
-              username: "abhi",
-              description: expenseName,
-              date: selectedDate.toISOString().split("T")[0],
-              amount: amount,
-              category_id: category,
-              transaction_type_id: transactionType,
-              payment_method_id: paymentMethod,
-            }
-          );
-        } else {
-          notify("Please edit before submitting", "error");
-          return;
-        }
-      }
-
-      console.log(`response - ${JSON.stringify(response.data)}`);
+      const response = await axios.post(`${API_BASE_URL}/expense`, form);
       notify(response.data.message, "success");
-      reset();
+      resetForm();
     } catch (error) {
-      notify(error.response.data.message, "error");
-      console.error(error.response.data.message);
+      console.error(error);
+      notify(error.response.data.message, "errorr");
     }
+  };
+
+  const updateExpense = async () => {
+    console.log(`form - ${JSON.stringify(form)}`);
+
+    if (!updateValidateForm())
+      return notify("Please make a change before submitting", "error");
+
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/expense?id=${expense.id}`,
+        form
+      );
+      notify(response.data.message, "success");
+      resetForm();
+    } catch (error) {
+      console.error(error);
+      notify(error.response.data.message, "errorr");
+    }
+  };
+
+  const submitClick = () => {
+    if (expense) return updateExpense();
+
+    return createExpense();
   };
 
   const backToHome = () => {
     navigate("/");
+  };
+
+  const renderCategories = () => {
+    if (categories.length === 0) return <MenuItem>No category</MenuItem>;
+
+    return categories.map((category) => {
+      return (
+        <MenuItem key={category.id} value={category.id}>
+          {category.category_name}
+        </MenuItem>
+      );
+    });
+  };
+
+  const renderTransactionTypes = () => {
+    if (transactionTypes.length === 0)
+      return <MenuItem>No Transaction Types</MenuItem>;
+
+    return transactionTypes.map((transaction) => {
+      return (
+        <MenuItem key={transaction.id} value={transaction.id}>
+          {transaction.type}
+        </MenuItem>
+      );
+    });
+  };
+
+  const renderPaymentMethods = () => {
+    if (paymentMethods.length === 0)
+      return <MenuItem>No Payment Methods</MenuItem>;
+
+    return paymentMethods.map((payment) => {
+      return (
+        <MenuItem key={payment.id} value={payment.id}>
+          {payment.method}
+        </MenuItem>
+      );
+    });
+  };
+
+  const renderHeading = () => {
+    if (expense) return <h1 className="fw-bolder">Update Expense</h1>;
+    return <h1 className="fw-bolder">Add Expense</h1>;
   };
 
   return (
@@ -261,13 +214,7 @@ const AddOrUpdateExpense = () => {
                   <ArrowBackIcon />
                 </Button>
               </div>
-              <div className="col-8 text-lg-center">
-                {expenseToUpdate && expenseName ? (
-                  <h1 className="fw-bolder">Update Expense</h1>
-                ) : (
-                  <h1 className="fw-bolder">Add Expense</h1>
-                )}
-              </div>
+              <div className="col-8 text-lg-center">{renderHeading()}</div>
             </div>
             <div className="row p-2">
               <div className="col-12 col-lg-6">
@@ -277,9 +224,11 @@ const AddOrUpdateExpense = () => {
               </div>
               <div className="col-12 col-lg-6">
                 <TextField
-                  value={expenseName}
+                  value={form.description}
                   sx={{ width: 3 / 4 }}
-                  onChange={(e) => setExpenseName(e.target.value)}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
                 ></TextField>
               </div>
             </div>
@@ -292,20 +241,12 @@ const AddOrUpdateExpense = () => {
               <div className="col-12 col-lg-6">
                 <Select
                   sx={{ width: 3 / 4 }}
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  value={form.category_id}
+                  onChange={(e) =>
+                    setForm({ ...form, category_id: e.target.value })
+                  }
                 >
-                  {categories.length > 0 ? (
-                    categories.map((category) => {
-                      return (
-                        <MenuItem key={category.id} value={category.id}>
-                          {category.category_name}
-                        </MenuItem>
-                      );
-                    })
-                  ) : (
-                    <MenuItem>No category</MenuItem>
-                  )}
+                  {renderCategories()}
                 </Select>
               </div>
             </div>
@@ -318,23 +259,12 @@ const AddOrUpdateExpense = () => {
               <div className="col-12 col-lg-6">
                 <Select
                   sx={{ width: 3 / 4 }}
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  value={form.payment_method_id}
+                  onChange={(e) =>
+                    setForm({ ...form, payment_method_id: e.target.value })
+                  }
                 >
-                  {paymentMethods.length > 0 ? (
-                    paymentMethods.map((paymentMethod) => {
-                      return (
-                        <MenuItem
-                          key={paymentMethod.id}
-                          value={paymentMethod.id}
-                        >
-                          {paymentMethod.method}
-                        </MenuItem>
-                      );
-                    })
-                  ) : (
-                    <MenuItem>No payment method</MenuItem>
-                  )}
+                  {renderPaymentMethods()}
                 </Select>
               </div>
             </div>
@@ -347,20 +277,12 @@ const AddOrUpdateExpense = () => {
               <div className="col-12 col-lg-6">
                 <Select
                   sx={{ width: 3 / 4 }}
-                  value={transactionType}
-                  onChange={(e) => setTransactionType(e.target.value)}
+                  value={form.transaction_type_id}
+                  onChange={(e) =>
+                    setForm({ ...form, transaction_type_id: e.target.value })
+                  }
                 >
-                  {transactionTypes.length > 0 ? (
-                    transactionTypes.map((transaction) => {
-                      return (
-                        <MenuItem key={transaction.id} value={transaction.id}>
-                          {transaction.type}
-                        </MenuItem>
-                      );
-                    })
-                  ) : (
-                    <MenuItem>No Transaction type</MenuItem>
-                  )}
+                  {renderTransactionTypes()}
                 </Select>
               </div>
             </div>
@@ -373,8 +295,8 @@ const AddOrUpdateExpense = () => {
               <div className="col-12 col-lg-6">
                 <TextField
                   sx={{ width: 3 / 4 }}
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  value={form.amount}
+                  onChange={(e) => setForm({ ...form, amount: e.target.value })}
                 ></TextField>
               </div>
             </div>
@@ -388,15 +310,15 @@ const AddOrUpdateExpense = () => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     sx={{ width: 3 / 4 }}
-                    value={selectedDate}
-                    onChange={handleDateChange}
+                    value={dayjs(form.date)}
+                    onChange={(date) => setForm({ ...form, date: date })}
                   />
                 </LocalizationProvider>
               </div>
             </div>
             <div className="row p-2">
               <div className="col-12 col-lg-2 offset-lg-5">
-                <Button variant="contained" onClick={addOrUpdateExpense}>
+                <Button variant="contained" onClick={submitClick}>
                   Submit
                 </Button>
               </div>
