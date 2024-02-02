@@ -31,3 +31,17 @@ body {
 .card-shadow:hover {
   box-shadow: none !important;
 }
+
+.list-item {
+  color: white;
+  transition: all 500ms ease;
+  border: white 1px solid;
+  box-shadow: 2px 2px 5px white;
+}
+
+.list-item:hover {
+  background-color: white;
+  color: black;
+  border: black 1px solid;
+  box-shadow: none;
+}

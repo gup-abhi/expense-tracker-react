@@ -2,6 +2,8 @@ import AddOrUpdateExpense from "./AddOrUpdateExpense";
 import "./App.css";
 import Home from "./Home";
 import Dashboard from "./Dashboard";
+import RecurringExpense from "./RecurringExpense";
+import AddOrUpdateRecurringExepnse from "./AddOrUpdateRecurringExpense";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
@@ -16,6 +18,11 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/add-expense" element={<AddOrUpdateExpense />} />
             <Route path="/expenses" element={<Home />} />
+            <Route
+              path="/add-recurring-expense"
+              element={<AddOrUpdateRecurringExepnse />}
+            />
+            <Route path="/recurring-expenses" element={<RecurringExpense />} />
           </Routes>
         </BrowserRouter>
         <ToastContainer />
