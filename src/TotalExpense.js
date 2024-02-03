@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_BASE_URL from "./config/config";
 import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
 import CardComponent from "./CardComponent";
 import { Typography } from "@mui/material";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
@@ -11,6 +10,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import { useSelector } from "react-redux";
 
 const TotalExpense = ({ month, year }) => {
+  const user = useSelector((state) => state.userReducer);
   const [total, setTotal] = useState(0);
   const budget = useSelector((state) => state.budgetReducer);
   const savings = useSelector((state) => state.savingsReducer);
@@ -25,7 +25,7 @@ const TotalExpense = ({ month, year }) => {
         setError(null);
 
         const totalExpenseResponse = await axios.get(
-          `${API_BASE_URL}/expense/getTotalExpenseForMonth?username=abhi&year=${year}&month=${month}`
+          `${API_BASE_URL}/expense/getTotalExpenseForMonth?username=${user}&year=${year}&month=${month}`
         );
 
         setTotal(totalExpenseResponse.data.total_expense || 0);

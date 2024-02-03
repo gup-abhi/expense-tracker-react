@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TotalExpense from "./TotalExpense";
 import ExpenseBreakdown from "./ExpenseBreakdown";
 import BudgetTrackingComponent from "./BudgetTrackingComponent";
@@ -7,8 +7,18 @@ import TopExpensesComponent from "./TopExpensesComponent";
 import ExpenseTrendsComponent from "./ExpenseTrendsComponent";
 import AlertsRemindersComponent from "./AlertsRemindersComponent";
 import { Typography, Select, MenuItem, Grid } from "@mui/material";
+import { UseSelector, useSelector } from "react-redux";
 
 const Dashboard = () => {
+  const user = useSelector((state) => state.userReducer);
+  useEffect(() => {
+    if (user) {
+      console.log("User has been set:", user);
+    } else {
+      console.log("User has been set:", user);
+    }
+  }, [user]);
+
   // Function to get the last N years
   const getLastNYears = (n) => {
     const currentYear = new Date().getFullYear();

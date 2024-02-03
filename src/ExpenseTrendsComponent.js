@@ -14,9 +14,10 @@ import axios from "axios";
 import API_BASE_URL from "./config/config";
 import { ResponsiveContainer } from "recharts";
 import LoadingSpinner from "./LoadingSpinner";
+import { useSelector } from "react-redux";
 
 const ExpenseTrendsComponent = ({ year, month }) => {
-  // Sample data for expense trends over time
+  const user = useSelector((state) => state.userReducer);
   const [expenseData, setExpenseData] = useState([]);
   const monthNames = [
     "Jan",
@@ -42,7 +43,7 @@ const ExpenseTrendsComponent = ({ year, month }) => {
         setError(null);
 
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getTotalExpense?username=abhi&year=${year}`
+          `${API_BASE_URL}/expense/getTotalExpense?username=${user}&year=${year}`
         );
 
         console.log(`response - ${JSON.stringify(response.data)}`);

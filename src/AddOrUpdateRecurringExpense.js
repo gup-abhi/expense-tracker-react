@@ -14,8 +14,10 @@ import { notify } from "./Notification";
 import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import { useSelector } from "react-redux";
 
 const AddOrUpdateRecurringExepnse = () => {
+  const user = useSelector((state) => state.userReducer);
   dayjs.extend(utc);
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ const AddOrUpdateRecurringExepnse = () => {
     amount: 0,
     start_date: "",
     frequency: "",
-    username: "abhi",
+    username: user,
   });
 
   const [categories, setCategories] = useState([]);

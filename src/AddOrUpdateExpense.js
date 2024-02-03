@@ -14,8 +14,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { notify } from "./Notification";
+import { useSelector } from "react-redux";
 
 const AddOrUpdateExpense = () => {
+  const user = useSelector((state) => state.userReducer);
   const location = useLocation();
   dayjs.extend(utc);
   const navigate = useNavigate();
@@ -27,7 +29,7 @@ const AddOrUpdateExpense = () => {
     transaction_type_id: 0,
     amount: 0,
     date: "",
-    username: "abhi",
+    username: user,
   });
 
   const [categories, setCategorioes] = useState([]);

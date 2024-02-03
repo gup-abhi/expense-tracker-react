@@ -12,6 +12,7 @@ import { Link as RouterLink } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 
 const BudgetTrackingComponent = ({ year, month }) => {
+  const user = useSelector((state) => state.userReducer);
   const budget = useSelector((state) => state.budgetReducer);
   const [totalExpense, setTotalExpense] = useState(0);
   const [remainingBudget, setRemainingBudget] = useState(0);
@@ -28,13 +29,13 @@ const BudgetTrackingComponent = ({ year, month }) => {
         setError(null);
 
         const remainingBudgetResponse = await axios.get(
-          `${API_BASE_URL}/user/budget/remaining?username=abhi&year=${year}&month=${month}`
+          `${API_BASE_URL}/user/budget/remaining?username=${user}&year=${year}&month=${month}`
         );
         const budgetResponse = await axios.get(
-          `${API_BASE_URL}/user/budget?username=abhi`
+          `${API_BASE_URL}/user/budget?username=${user}`
         );
         const totalExpenseResponse = await axios.get(
-          `${API_BASE_URL}/expense/getTotalExpenseForMonth?username=abhi&year=${year}&month=${month}`
+          `${API_BASE_URL}/expense/getTotalExpenseForMonth?username=${user}&year=${year}&month=${month}`
         );
 
         setRemainingBudget(remainingBudgetResponse.data.remaining_budget);
@@ -64,7 +65,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
 
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/user/budget?username=abhi&budget=${inputBudget}`
+        `${API_BASE_URL}/user/budget?username=${user}&budget=${inputBudget}`
       );
 
       console.log(`response - ${JSON.stringify(response.data)}`);

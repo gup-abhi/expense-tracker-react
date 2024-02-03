@@ -5,8 +5,10 @@ import Grid from "@mui/material/Grid";
 import CardComponent from "./CardComponent";
 import LoadingSpinner from "./LoadingSpinner";
 import { Typography } from "@mui/material";
+import { useSelector } from "react-redux";
 
 const ExpenseBreakdown = ({ year, month }) => {
+  const user = useSelector((state) => state.userReducer);
   const [expenseBreakdown, setExpenseBreakdown] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,7 +20,7 @@ const ExpenseBreakdown = ({ year, month }) => {
         setError(null);
 
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getTotalAmountForEachCategory?username=abhi&year=${year}&month=${month}&category_id=17&payment_method_id=8&transaction_type_id=8`
+          `${API_BASE_URL}/expense/getTotalAmountForEachCategory?username=${user}&year=${year}&month=${month}&category_id=17&payment_method_id=8&transaction_type_id=8`
         );
 
         setExpenseBreakdown(response.data);

@@ -14,9 +14,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { StyledTableCell, StyledTableRow } from "./TableStyles";
 import { useNavigate } from "react-router-dom";
 import { notify } from "./Notification";
+import { useSelector } from "react-redux";
 
 const RecurringExpense = () => {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.userReducer);
   const [recurringExpense, setRecurringExpense] = useState([]);
   const frequency = {
     Y: "Yearly",
@@ -31,7 +33,9 @@ const RecurringExpense = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios(`${API_BASE_URL}/recurring?username=abhi`);
+        const response = await axios(
+          `${API_BASE_URL}/recurring?username=${user}`
+        );
 
         console.log(`response - ${JSON.stringify(response.data)}`);
         setRecurringExpense(response.data);

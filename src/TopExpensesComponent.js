@@ -4,9 +4,10 @@ import CardComponent from "./CardComponent";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner";
 import API_BASE_URL from "./config/config";
+import { useSelector } from "react-redux";
 
 const TopExpensesComponent = ({ year, month }) => {
-  // State for expenses list
+  const user = useSelector((state) => state.userReducer);
   const [expensesList, setExpensesList] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,7 @@ const TopExpensesComponent = ({ year, month }) => {
         setError(null);
 
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getTopExpenses?username=abhi&year=${year}&month=${month}`
+          `${API_BASE_URL}/expense/getTopExpenses?username=${user}&year=${year}&month=${month}`
         );
 
         setExpensesList(response.data);

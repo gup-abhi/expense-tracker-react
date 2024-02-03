@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Typography, Box, List, ListItem, Link } from "@mui/material";
 
 const LandingPage = () => {
   return (
     <div
-      style={{ height: "100vh" }}
+      style={{ minHeight: "100vh" }}
       className="container-fluid text-center bg-dark text-white"
     >
       <Box

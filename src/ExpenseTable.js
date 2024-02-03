@@ -21,8 +21,10 @@ import { PaymentMethodsContext } from "./PaymentMethodsContext";
 import SelectTransactionTypes from "./SelectTransactionTypes";
 import { TransactionTypesContext } from "./TransactionTypesContext";
 import { StyledTableCell, StyledTableRow } from "./TableStyles";
+import { useSelector } from "react-redux";
 
 export default function ExpenseTable() {
+  const user = useSelector((state) => state.userReducer);
   const [expenses, setExpenses] = useState([]);
   const navigate = useNavigate();
   const { yearMonthSelected } = useContext(YearMonthContext);
@@ -36,7 +38,7 @@ export default function ExpenseTable() {
       const month = yearMonthSelected.split("-")[1];
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/expense/getAllExpensesForUser?username=abhi&year=${year}&month=${month}&category_id=${category}&payment_method_id=${paymentSelected}&transaction_type_id=${transactionTypeSelected}`
+          `${API_BASE_URL}/expense/getAllExpensesForUser?username=${user}&year=${year}&month=${month}&category_id=${category}&payment_method_id=${paymentSelected}&transaction_type_id=${transactionTypeSelected}`
         );
         console.log(response.data);
         setExpenses(response.data);

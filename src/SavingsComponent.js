@@ -10,7 +10,7 @@ import setSavings from "./store/actions/savingsActions";
 import LoadingSpinner from "./LoadingSpinner";
 
 const SavingsComponent = ({ month, year }) => {
-  // State for savings goal and current savings
+  const user = useSelector((state) => state.userReducer);
   const goal = useSelector((state) => state.goalReducer);
   const currentSavings = useSelector((state) => state.savingsReducer);
   const dispatch = useDispatch();
@@ -26,11 +26,11 @@ const SavingsComponent = ({ month, year }) => {
         setError(null);
 
         const savingsResponse = await axios.get(
-          `${API_BASE_URL}/user/savings?username=abhi&year=${year}&month=${month}`
+          `${API_BASE_URL}/user/savings?username=${user}&year=${year}&month=${month}`
         );
 
         const goalResponse = await axios.get(
-          `${API_BASE_URL}/user/goal?username=abhi`
+          `${API_BASE_URL}/user/goal?username=${user}`
         );
 
         updateGoalState(goalResponse.data.goal);
@@ -69,7 +69,7 @@ const SavingsComponent = ({ month, year }) => {
 
     try {
       const response = await axios.put(
-        `${API_BASE_URL}/user/goal?username=abhi&goal=${inputGoal}`
+        `${API_BASE_URL}/user/goal?username=${user}&goal=${inputGoal}`
       );
 
       console.log(`response - ${JSON.stringify(response.data)}`);

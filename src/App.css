@@ -24,6 +24,13 @@ body {
   /* padding: 1rem; */
 }
 
+html,
+body,
+#root,
+.App {
+  height: 100%;
+}
+
 .App > .conainer-fluid {
   min-height: 100vh;
 }
