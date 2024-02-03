@@ -72,6 +72,10 @@ const RecurringExpense = () => {
     navigate("/add-recurring-expense", { state: { expense: expense } });
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   const renderContent = () => {
     if (recurringExpense.length === 0)
       return (
@@ -166,9 +170,16 @@ const RecurringExpense = () => {
         </div>
       </div>
       <div className="row">
-        <div className="col-12 col-lg-2 offset-lg-10">
+        <div className="col-12">
           <Button
-            className="my-3"
+            className="my-3 float-start"
+            variant="contained"
+            onClick={goBack}
+          >
+            Go Back
+          </Button>
+          <Button
+            className="my-3 float-end"
             variant="contained"
             onClick={addRecurringExpense}
           >

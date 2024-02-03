@@ -153,7 +153,7 @@ const AddOrUpdateExpense = () => {
   };
 
   const backToHome = () => {
-    navigate("/");
+    navigate(-1);
   };
 
   const renderCategories = () => {

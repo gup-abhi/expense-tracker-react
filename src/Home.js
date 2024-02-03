@@ -18,6 +18,10 @@ const Home = () => {
     navigate("/add-expense");
   };
 
+  const goBack = () => {
+    navigate(-1);
+  };
+
   const renderComponent = () => {
     if (isSwitch) return <DisplayChart />;
 
@@ -56,7 +60,14 @@ const Home = () => {
         <div className="col-12 col-lg-12 text-lg-center">
           <div className="col-12 col-lg-12 text-center">
             <Button
-              className="my-4 float-lg-end"
+              className="my-4 float-start"
+              variant="contained"
+              onClick={goBack}
+            >
+              Go Back
+            </Button>
+            <Button
+              className="my-4 float-end"
               variant="contained"
               onClick={addExpense}
             >

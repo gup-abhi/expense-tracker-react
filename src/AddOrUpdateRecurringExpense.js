@@ -214,7 +214,7 @@ const AddOrUpdateRecurringExepnse = () => {
   };
 
   const backToHome = () => {
-    navigate("/");
+    navigate(-1);
   };
 
   const renderHeading = () => {

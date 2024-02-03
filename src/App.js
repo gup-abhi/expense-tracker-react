@@ -4,6 +4,7 @@ import Home from "./Home";
 import Dashboard from "./Dashboard";
 import RecurringExpense from "./RecurringExpense";
 import AddOrUpdateRecurringExepnse from "./AddOrUpdateRecurringExpense";
+import LandingPage from "./LandingPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
@@ -15,7 +16,8 @@ function App() {
       <div className="App">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/add-expense" element={<AddOrUpdateExpense />} />
             <Route path="/expenses" element={<Home />} />
             <Route

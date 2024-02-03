@@ -12,16 +12,20 @@ html {
 }
 
 body {
-  min-height: inherit;
+  min-height: 100vh;
   width: inherit;
   text-rendering: optimizeSpeed;
   font-family: "Roboto", sans-serif;
 }
 
 .App {
-  min-height: inherit;
+  min-height: 100vh;
   width: inherit;
-  padding: 1rem;
+  /* padding: 1rem; */
+}
+
+.App > .conainer-fluid {
+  min-height: 100vh;
 }
 
 .card-shadow {
