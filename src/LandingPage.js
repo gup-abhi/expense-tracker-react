@@ -1,7 +1,16 @@
 import React, { useEffect } from "react";
 import { Button, Typography, Box, List, ListItem, Link } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.userReducer);
+
+  useEffect(() => {
+    if (user) navigate("/dashboard");
+  }, [user]);
+
   return (
     <div
       style={{ minHeight: "100vh" }}
@@ -33,8 +42,8 @@ const LandingPage = () => {
         </Box>
         <Box sx={{ my: 2 }}>
           <Typography variant="h2">Get Started</Typography>
-          <Link href="dashboard">
-            <Button variant="contained">Dashboard</Button>
+          <Link href="login">
+            <Button variant="contained">Login</Button>
           </Link>
         </Box>
         <Box sx={{ my: 2 }}>
