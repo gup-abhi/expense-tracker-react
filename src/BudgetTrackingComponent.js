@@ -23,7 +23,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
   let inputBudget = 0;
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchRemainingBudgetData = async () => {
       try {
         setLoading(true);
         setError(null);
@@ -31,27 +31,61 @@ const BudgetTrackingComponent = ({ year, month }) => {
         const remainingBudgetResponse = await axios.get(
           `${API_BASE_URL}/user/budget/remaining?username=${user}&year=${year}&month=${month}`
         );
-        const budgetResponse = await axios.get(
-          `${API_BASE_URL}/user/budget?username=${user}`
-        );
-        const totalExpenseResponse = await axios.get(
-          `${API_BASE_URL}/expense/getTotalExpenseForMonth?username=${user}&year=${year}&month=${month}`
-        );
 
         setRemainingBudget(remainingBudgetResponse.data.remaining_budget);
-        setTotalExpense(totalExpenseResponse.data.total_expense);
-        updateBudgetState(budgetResponse.data.budget);
       } catch (error) {
         console.error(error);
         setError(`No budget found for ${year}-${month}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRemainingBudgetData();
+  }, [year, month]);
+
+  useEffect(() => {
+    const fetchBudgetData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const budgetResponse = await axios.get(
+          `${API_BASE_URL}/user/budget?username=${user}`
+        );
+
+        updateBudgetState(budgetResponse.data.budget);
+      } catch (error) {
+        console.error(error);
         updateBudgetState(0);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [year, month, budget]); // Remove budget from the dependencies
+    fetchBudgetData();
+  }, [budget]);
+
+  useEffect(() => {
+    const fetchTotalExpenseData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const totalExpenseResponse = await axios.get(
+          `${API_BASE_URL}/expense/getTotalExpenseForMonth?username=${user}&year=${year}&month=${month}`
+        );
+
+        setTotalExpense(totalExpenseResponse.data.total_expense);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTotalExpenseData();
+  }, [year, month]);
 
   const updateBudgetState = (budget) => {
     dispatch(setBudget(budget));

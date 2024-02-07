@@ -30,6 +30,7 @@ const SignUp = () => {
     currency_id: "",
     email: "",
     budget: "",
+    saving_goal: "",
   });
 
   useEffect(() => {
@@ -74,7 +75,8 @@ const SignUp = () => {
       !form.password ||
       !form.retype_password ||
       !form.currency_id ||
-      !form.budget
+      !form.budget ||
+      !form.saving_goal
     ) {
       notify("Please fill all the details", "error");
       return false;
@@ -167,6 +169,15 @@ const SignUp = () => {
             type="number"
             value={form.budget}
             onChange={(e) => setForm({ ...form, budget: e.target.value })}
+          />
+          <TextField
+            fullWidth
+            margin="normal"
+            name="savings"
+            label="Savings Goal"
+            type="number"
+            value={form.saving_goal}
+            onChange={(e) => setForm({ ...form, saving_goal: e.target.value })}
           />
           <Button
             type="submit"

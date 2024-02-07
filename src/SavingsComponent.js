@@ -20,7 +20,7 @@ const SavingsComponent = ({ month, year }) => {
   let inputGoal = 0; // Use a local variable for the input field
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchSavingsData = async () => {
       try {
         setLoading(true);
         setError(null);
@@ -29,23 +29,40 @@ const SavingsComponent = ({ month, year }) => {
           `${API_BASE_URL}/user/savings?username=${user}&year=${year}&month=${month}`
         );
 
-        const goalResponse = await axios.get(
-          `${API_BASE_URL}/user/goal?username=${user}`
-        );
-
-        updateGoalState(goalResponse.data.goal);
         updateSavingsState(savingsResponse.data.savings);
       } catch (error) {
         console.error(error);
-        updateGoalState(0);
         setError(`No savings data found for ${year}-${month}`);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [year, month, goal]);
+    fetchSavingsData();
+  }, [year, month]);
+
+  useEffect(() => {
+    const fetchGoalData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const goalResponse = await axios.get(
+          `${API_BASE_URL}/user/goal?username=${user}`
+        );
+
+        console.log(`goalResponse.data.goal - ${goalResponse.data.goal}`);
+        updateGoalState(goalResponse.data.goal);
+      } catch (error) {
+        console.error(error);
+        updateGoalState(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGoalData();
+  }, [goal]);
 
   // Function to calculate the progress percentage
   const calculateProgress = () => {
