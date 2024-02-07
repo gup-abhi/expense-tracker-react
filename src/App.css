@@ -56,3 +56,12 @@ body,
   border: black 1px solid;
   box-shadow: none;
 }
+
+.row.display-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  height: 95% !important;
+}
