@@ -1,30 +1,41 @@
 import { useContext } from "react";
-import { FormLabel, Select, MenuItem } from "@mui/material"; // adjust the import as needed
+import { Select, Typography } from "@mui/material"; // adjust the import as needed
 import { YearMonthContext } from "./YearMonthContext";
+import { YearMonth } from "./YearMonth";
 
 const SelectDate = () => {
-  const { yearMonthSelected, setYearMonthSelected, yearMonthArray } =
-    useContext(YearMonthContext);
+  const { yearOptions, monthOptions, handleDropdownChange } = YearMonth();
+  const { year, month } = useContext(YearMonthContext);
 
   return (
-    <div className="col-6 col-lg-2">
-      <FormLabel id="date-select-label">YYYY-MM</FormLabel>
-      <Select
-        sx={{ width: 1 }}
-        id="date-select"
-        label="YYYY-MM"
-        value={yearMonthSelected}
-        onChange={(e) => setYearMonthSelected(e.target.value)}
-      >
-        {yearMonthArray.map((yearMonth, index) => {
-          return (
-            <MenuItem key={index} value={yearMonth}>
-              {yearMonth}
-            </MenuItem>
-          );
-        })}
-      </Select>
-    </div>
+    <>
+      <div className="col-6 col-lg-2">
+        <Typography variant="subtitle1">Month:</Typography>
+        <Select
+          label="Month"
+          id="month"
+          name="month"
+          value={month}
+          onChange={handleDropdownChange}
+          fullWidth
+        >
+          {monthOptions}
+        </Select>
+      </div>
+      <div className="col-6 col-lg-2">
+        <Typography variant="subtitle1">Year:</Typography>
+        <Select
+          label="Year"
+          id="year"
+          name="year"
+          value={year.toString()}
+          onChange={handleDropdownChange}
+          fullWidth
+        >
+          {yearOptions}
+        </Select>
+      </div>
+    </>
   );
 };
 

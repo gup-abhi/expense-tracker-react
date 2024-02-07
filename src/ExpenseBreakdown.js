@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_BASE_URL from "./config/config";
-import Grid from "@mui/material/Grid";
 import CardComponent from "./CardComponent";
 import LoadingSpinner from "./LoadingSpinner";
-import { Typography } from "@mui/material";
 import { useSelector } from "react-redux";
+import { List, ListItem, ListItemText, Typography } from "@mui/material";
 
 const ExpenseBreakdown = ({ year, month }) => {
   const user = useSelector((state) => state.userReducer);
@@ -41,15 +40,16 @@ const ExpenseBreakdown = ({ year, month }) => {
     // if (expenseBreakdown.length === 0) return <h3>No Data to show</h3>;
 
     return (
-      <Grid container spacing={2}>
+      <List>
         {expenseBreakdown.map((expense, index) => (
-          <Grid item xs={6} lg={4} key={index}>
-            <em>
-              {expense.label} - {expense.value}
-            </em>
-          </Grid>
+          <ListItem key={index}>
+            <ListItemText
+              className="list-item px-1"
+              primary={`${expense.label} - ${expense.value}`}
+            />
+          </ListItem>
         ))}
-      </Grid>
+      </List>
     );
   };
 

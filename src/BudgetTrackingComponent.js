@@ -42,7 +42,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
     };
 
     fetchRemainingBudgetData();
-  }, [year, month]);
+  }, [year, month, budget]);
 
   useEffect(() => {
     const fetchBudgetData = async () => {
@@ -85,7 +85,7 @@ const BudgetTrackingComponent = ({ year, month }) => {
     };
 
     fetchTotalExpenseData();
-  }, [year, month]);
+  }, [year, month, budget]);
 
   const updateBudgetState = (budget) => {
     dispatch(setBudget(budget));

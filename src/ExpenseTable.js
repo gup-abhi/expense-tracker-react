@@ -27,15 +27,15 @@ export default function ExpenseTable() {
   const user = useSelector((state) => state.userReducer);
   const [expenses, setExpenses] = useState([]);
   const navigate = useNavigate();
-  const { yearMonthSelected } = useContext(YearMonthContext);
+  // const { yearMonthSelected } = useContext(YearMonthContext);
+  const { year, month } = useContext(YearMonthContext);
   const { category } = useContext(CategoryContext);
   const { paymentSelected } = useContext(PaymentMethodsContext);
   const { transactionTypeSelected } = useContext(TransactionTypesContext);
 
   useEffect(() => {
+    // console.log(`year - ${year} :: month - ${month}`);
     const getExpenses = async () => {
-      const year = yearMonthSelected.split("-")[0];
-      const month = yearMonthSelected.split("-")[1];
       try {
         const response = await axios.get(
           `${API_BASE_URL}/expense/getAllExpensesForUser?username=${user}&year=${year}&month=${month}&category_id=${category}&payment_method_id=${paymentSelected}&transaction_type_id=${transactionTypeSelected}`
@@ -51,7 +51,8 @@ export default function ExpenseTable() {
 
     // Check if all parameters are set
     if (
-      !yearMonthSelected ||
+      !year ||
+      !month ||
       !category ||
       !paymentSelected ||
       !transactionTypeSelected
@@ -60,7 +61,7 @@ export default function ExpenseTable() {
     }
 
     getExpenses();
-  }, [yearMonthSelected, category, paymentSelected, transactionTypeSelected]);
+  }, [year, month, category, paymentSelected, transactionTypeSelected]);
 
   const formatDate = (date) => {
     return `${date.split("T")[0]}`;
@@ -102,8 +103,8 @@ export default function ExpenseTable() {
         </StyledTableRow>
       );
 
-    return expenses.map((expense) => (
-      <StyledTableRow key={expense.id}>
+    return expenses.map((expense, index) => (
+      <StyledTableRow key={index}>
         <StyledTableCell component="th" scope="row" align="left">
           <Button
             className="mx-2"

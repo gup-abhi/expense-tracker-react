@@ -3,8 +3,6 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import DisplayChart from "./DisplayChart";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
 import { YearMonthProvider } from "./YearMonthContext";
 import { CategoryProvider } from "./CategoryContext";
 import { PaymentMethodsProvider } from "./PaymentMethodsContext";
@@ -37,13 +35,13 @@ const Home = () => {
         </div>
       </div>
       <div className="row p-2 justify-content-end">
-        <div className="col-3 col-lg-1 mx-3">
+        {/* <div className="col-3 col-lg-1 mx-3">
           <FormControlLabel
             control={<Switch />}
-            label={isSwitch ? "Home" : "Chart"}
+            label={isSwitch ? "Expense Table" : "Chart"}
             onChange={(e, checked) => setIsSwitch(checked)}
           />
-        </div>
+        </div> */}
       </div>
       <div className="row">
         <div className="col">
