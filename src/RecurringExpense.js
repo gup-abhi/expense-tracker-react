@@ -15,10 +15,12 @@ import { StyledTableCell, StyledTableRow } from "./TableStyles";
 import { useNavigate } from "react-router-dom";
 import { notify } from "./Notification";
 import { useSelector } from "react-redux";
+import LoadingSpinner from "./LoadingSpinner";
 
 const RecurringExpense = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.userReducer);
+  const [loading, setLoading] = useState(true);
   const [recurringExpense, setRecurringExpense] = useState([]);
   const frequency = {
     Y: "Yearly",
@@ -33,6 +35,7 @@ const RecurringExpense = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const response = await axios(
           `${API_BASE_URL}/recurring?username=${user}`
         );
@@ -43,6 +46,8 @@ const RecurringExpense = () => {
         setRecurringExpense([]);
         console.error(error);
         notify(error.response.data.message, "error");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -81,6 +86,24 @@ const RecurringExpense = () => {
   };
 
   const renderContent = () => {
+    if (loading)
+      return (
+        <StyledTableRow>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell>
+            <LoadingSpinner />
+          </StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+        </StyledTableRow>
+      );
+
     if (recurringExpense.length === 0)
       return (
         <StyledTableRow>

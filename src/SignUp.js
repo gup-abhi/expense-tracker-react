@@ -94,7 +94,7 @@ const SignUp = () => {
       try {
         const response = await axios.post(`${API_BASE_URL}/user`, form);
         console.log(response.data.message);
-        dispatch(setUser(response.data.username));
+        // dispatch(setUser(response.data.username));
         notify(response.data.message, "success");
         navigate("/dashboard");
       } catch (error) {

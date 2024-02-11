@@ -7,7 +7,7 @@ import TopExpensesComponent from "./TopExpensesComponent";
 import ExpenseTrendsComponent from "./ExpenseTrendsComponent";
 import AlertsRemindersComponent from "./AlertsRemindersComponent";
 import { Typography, Select, MenuItem, Grid } from "@mui/material";
-import { UseSelector, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const user = useSelector((state) => state.userReducer);

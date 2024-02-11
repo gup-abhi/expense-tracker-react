@@ -22,6 +22,7 @@ import SelectTransactionTypes from "./SelectTransactionTypes";
 import { TransactionTypesContext } from "./TransactionTypesContext";
 import { StyledTableCell, StyledTableRow } from "./TableStyles";
 import { useSelector } from "react-redux";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function ExpenseTable() {
   const user = useSelector((state) => state.userReducer);
@@ -32,11 +33,13 @@ export default function ExpenseTable() {
   const { category } = useContext(CategoryContext);
   const { paymentSelected } = useContext(PaymentMethodsContext);
   const { transactionTypeSelected } = useContext(TransactionTypesContext);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // console.log(`year - ${year} :: month - ${month}`);
     const getExpenses = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(
           `${API_BASE_URL}/expense/getAllExpensesForUser?username=${user}&year=${year}&month=${month}&category_id=${category}&payment_method_id=${paymentSelected}&transaction_type_id=${transactionTypeSelected}`
         );
@@ -46,6 +49,8 @@ export default function ExpenseTable() {
         setExpenses([]);
         console.log(error.response.data.message);
         notify(error.response.data.message, "error");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -89,6 +94,22 @@ export default function ExpenseTable() {
   };
 
   const renderContent = () => {
+    if (loading)
+      return (
+        <StyledTableRow>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell>
+            <LoadingSpinner />
+          </StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell></StyledTableCell>
+        </StyledTableRow>
+      );
+
     if (expenses?.length === 0)
       return (
         <StyledTableRow>
