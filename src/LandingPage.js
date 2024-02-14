@@ -42,8 +42,13 @@ const LandingPage = () => {
         </Box>
         <Box sx={{ my: 2 }}>
           <Typography variant="h2">Get Started</Typography>
-          <Link href="login">
+          <Link href="login" sx={{ mx: 2 }}>
             <Button variant="contained">Login</Button>
+          </Link>
+          <Link href="sign-up" sx={{ mx: 2 }}>
+            <Button variant="contained" color="secondary">
+              SignUp
+            </Button>
           </Link>
         </Box>
         <Box sx={{ my: 2 }}>
